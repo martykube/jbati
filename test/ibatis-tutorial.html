@@ -87,7 +87,7 @@
 				person.weightInKilograms =  67;
 				person.heightInMeters = 1.92;
 
-				jBati.SqlMapClient.insert('insertPerson', person);
+				examples.domain.jbatiClient.insert('insertPerson', person);
 				
 				var resultSet = Jaxer.DB.execute(						
 						'SELECT ' +
@@ -121,7 +121,7 @@
 					"VALUES (2, 'John', 'Doe', '1975-11-20', 80.2, 1.5);"
 				);
 				
-				var person = jBati.SqlMapClient.queryForObject('getPerson', 2);
+				var person = examples.domain.jbatiClient.queryForObject('getPerson', 2);
 
 				assertEquals(person.constructor, examples.domain.Person, 'should be a Person object');
 				assertEquals(person.id, 2, 'person.id did not match');
@@ -151,7 +151,7 @@
 				person.weightInKilograms =  67;
 				person.heightInMeters = 1.92;
 
-				jBati.SqlMapClient.update('updatePerson', person);
+				examples.domain.jbatiClient.update('updatePerson', person);
 				
 				var resultSet = Jaxer.DB.execute(						
 						'SELECT ' +
@@ -185,7 +185,7 @@
 					"VALUES (57, 'John', 'Doe', '1998-10-01', 80.2, 1.5);"
 				);
 
-				jBati.SqlMapClient.delete('deletePerson', parseInt('57'));
+				examples.domain.jbatiClient.delete('deletePerson', parseInt('57'));
 				
 				var resultSet = Jaxer.DB.execute(						
 						'SELECT ' +

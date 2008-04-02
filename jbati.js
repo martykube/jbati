@@ -6,116 +6,107 @@
  *
 /*--------------------------------------------------------------------------*/
 
+
 Jaxer.Log.info('Loading jbati.js'); 
 
 //****************************
 // jBati - namespace for jBati
 //****************************
 
-if(jBati == undefined) {
-	Jaxer.Log.info('Setting jBati'); 
+if(typeof jBati == 'undefined') {
 	var jBati = {};
 }
 
 jBati.log = new Jaxer.Log.ModuleLogger('jBati', Jaxer.Log.TRACE);
+
 jBati.toJSON = function(object) { return Jaxer.Serialization.toJSONString(object); }
-
-//*********************************************
-// jBati.SqlMapConfig - User configuration data
-//*********************************************
-
-jBati.SqlMapConfig = {};
-jBati.SqlMapConfig.sqlMaps = [];
-
-
-// Add an sqlMap
-jBati.SqlMapConfig.addSqlMap = function(sqlMap) {
-	jBati.SqlMapConfig.sqlMaps.push(sqlMap);
-}
-
-// Fish out a statement by ID
-jBati.SqlMapConfig.getStatementById = function(statementId) {
-	jBati.log.trace('jBati.SqlMapConfig.getStatementById');
-	for each (var sqlMap in jBati.SqlMapConfig.sqlMaps) {
-		for each (var statement in sqlMap.statements) {
-			if(statement.id == statementId) {
-				jBati.log.trace('returning statement: ' + jBati.toJSON(statement));
-				return statement;
-			}
-		}
-	}
-	throw new Error('jBati.SqlMapConfig.getStatementById: ' + 
-		'Could not find statament for id: ' + statementId);
-};
 
 //*****************************************
 // jBati.SqlMapClient - User query exection 
 //*****************************************
 
-jBati.SqlMapClient = {}
+jBati.SqlMapClient = function (sqlMapConfig) {
+	this.config = sqlMapConfig;
+}
 
-// read 
-jBati.SqlMapClient.queryForObject = function(id, parameterObject) {
-	jBati.log.debug('jBati.SqlMapClient.queryForObject');
+jBati.SqlMapClient.prototype = {
+	config: undefined,
 	
-	var statement = jBati.SqlMapConfig.getStatementById(id);
-	jBati.log.trace('statement: ' + jBati.toJSON(statement.sql));
+	queryForObject: function(id, parameterObject) {
+		jBati.log.debug('SqlMapClient.queryForObject');
+		
+		var statement = this.getStatementById(id);
+		var resultSet = this.bindExectute(statement, parameterObject);
+	
+		// Unmarshal
+		jBati.log.trace('creating new object: ' + statement.resultClass);
+		var newObject = eval('new ' + statement.@resultClass + '()');
+		for(i = 0; i <  resultSet.columns.length; i++) {
+			newObject[resultSet.columns[i]] = resultSet.rowsAsArrays[0][i];
+		}
+		jBati.log.trace('newObject: ' + jBati.toJSON(newObject));
+		
+		return newObject;
+	},
 
-	var resultSet = jBati.SqlMapClient.bindExectute(statement, parameterObject);
+	// insert
+	insert: function(id, parameterObject) {
+		jBati.log.debug('SqlMapClient.insert');
+		this.fetchBindExecute(id, parameterObject);	
+	},
 
-	// Unmarshal
-	jBati.log.trace('creating new object: ' + statement.resultClass);
-	var newObject = eval('new ' + statement.resultClass + '()');
-	for(i = 0; i <  resultSet.columns.length; i++) {
-		newObject[resultSet.columns[i]] = resultSet.rowsAsArrays[0][i];
+	// update
+	update: function(id, parameterObject) {
+		jBati.log.debug('SqlMapClient.update');
+		this.fetchBindExecute(id, parameterObject);	
+	},
+
+	// update
+	delete: function(id, parameterObject) {
+		jBati.log.debug('SqlMapClient.delete');
+		this.fetchBindExecute(id, parameterObject);	
+	},
+
+	// fetch statement, bind parameters, and execute
+	fetchBindExecute: function(id, parameterObject) {
+		jBati.log.debug('SqlMapClient.fetchBindExecute');
+	
+		// fetch
+		var statement = this.getStatementById(id);
+		jBati.log.trace('statement: ' + jBati.toJSON(statement.sql));
+		
+		return this.bindExectute(statement, parameterObject);
+	},
+
+	// bind parameters and execute
+	bindExectute: function (statement, parameterObject) {
+		jBati.log.debug('SqlMapClient.bindExectute');
+	
+		// bind
+		var boundStatement = jBati.ParameterMapper.bind(statement.toString(), parameterObject);
+		jBati.log.trace('boundStatement: ' + jBati.toJSON(boundStatement));
+		
+		// execute
+		var resultSet = Jaxer.DB.execute(boundStatement.sql, boundStatement.parameters);
+		jBati.log.trace('resultSet: ' + jBati.toJSON(resultSet));
+		
+		return resultSet;
+	},
+
+	// Fish out a statement by ID
+	getStatementById: function(statementId) {
+		jBati.log.debug('SqlMapClient.getStatementById');
+
+		var statement = this.config.sqlMap.*.(@id == statementId);
+		jBati.log.trace('statement: ' + statement.toXMLString());
+
+		if(statement.length() != 1) {		
+			throw new Error('jBati.SqlMapConfig.getStatementById: ' + 
+				'Could not find statament for id: ' + statementId);
+		}
+		return statement;
 	}
-	jBati.log.trace('newObject: ' + jBati.toJSON(newObject));
-	
-	return newObject;
 };
-
-// insert
-jBati.SqlMapClient.insert = function(id, parameterObject) {
-	jBati.log.debug('jBati.SqlMapClient.insert');
-	jBati.SqlMapClient.fetchBindExecute(id, parameterObject);	
-}
-
-// update
-jBati.SqlMapClient.update = function(id, parameterObject) {
-	jBati.log.debug('jBati.SqlMapClient.update');
-	jBati.SqlMapClient.fetchBindExecute(id, parameterObject);	
-}
-
-// update
-jBati.SqlMapClient.delete = function(id, parameterObject) {
-	jBati.log.debug('jBati.SqlMapClient.delete');
-	jBati.SqlMapClient.fetchBindExecute(id, parameterObject);	
-}
-
-// fetch statement, bind parameters, and execute
-jBati.SqlMapClient.fetchBindExecute = function(id, parameterObject) {
-	jBati.log.debug('jBati.SqlMapClient.fetchBindExecute');
-
-	var statement = jBati.SqlMapConfig.getStatementById(id);
-	jBati.log.trace('statement: ' + jBati.toJSON(statement.sql));
-	
-	return jBati.SqlMapClient.bindExectute(statement, parameterObject);
-}
-
-// bind parameters and execute
-jBati.SqlMapClient.bindExectute = function (statement, parameterObject) {
-	jBati.log.debug('jBati.SqlMapClient.bindExectute');
-
-	// bind
-	var boundStatement = jBati.ParameterMapper.bind(statement.sql, parameterObject);
-	jBati.log.trace('boundStatement: ' + jBati.toJSON(boundStatement));
-	
-	// execute
-	var resultSet = Jaxer.DB.execute(boundStatement.sql, boundStatement.parameters);
-	jBati.log.trace('resultSet: ' + jBati.toJSON(resultSet));
-	
-	return resultSet;
-}
 
 //************************************************************************
 // ParameterMapper - translates from iBatis sql/params to jaxer sql/params
@@ -125,12 +116,46 @@ jBati.ParameterMapper = function () {};
 
 jBati.ParameterMapper.prototype = {
 	sql: '',
-	parameters: []
+	parameters: [],
+	
+	addParameter: function(parameterName, parameterObject) {
+		if(this.isScalar(parameterObject)) {
+			this.parameters.push(parameterObject);
+		} else {
+			if(!this.hasProperty(parameterName, parameterObject)) {
+				throw new Error('Missing property named: ' + parameterName 
+					+ ' for object ' + parameterObject);
+			}
+			this.parameters.push(parameterObject[parameterName]);
+		}
+	},
+
+	isScalar: function(maybeScalar) {
+		if (	
+				(maybeScalar instanceof Number)  || 
+				(maybeScalar instanceof String)  ||
+				(maybeScalar instanceof Date)    ||
+				(typeof maybeScalar == 'number') ||
+				(typeof maybeScalar == 'string') ) {
+			return true;
+		}
+		return false;
+	},
+
+	hasProperty: function(parameterName, parameterObject) {
+		for(var i in parameterObject) {
+			if(i == parameterName) {
+				return true;
+			}
+		}
+		return false;
+	}
 };
 
 // returns a ParameterMapper containing jaxer sql/params
 jBati.ParameterMapper.bind = function(sql, parameterObject) {
 	jBati.log.debug('jBati.ParameterMapper.bind');
+	jBati.log.debug('binding sql: ' + sql);
 	var pm = new jBati.ParameterMapper();
 	var replacementTokenRegex = /#([^#]+)#/g;
 	var matches;
@@ -139,43 +164,16 @@ jBati.ParameterMapper.bind = function(sql, parameterObject) {
 		pm.sql += 
 			sql.substring(copyFrom, replacementTokenRegex.lastIndex - matches[0].length) + '?';
 		copyFrom = replacementTokenRegex.lastIndex;
-		jBati.ParameterMapper.addParameter(pm, matches[1], parameterObject);
+		pm.addParameter(matches[1], parameterObject);
 	}
 	pm.sql += sql.substring(copyFrom, sql.length);
 	return pm;
 };
 
-jBati.ParameterMapper.addParameter = function(parameterMapper, parameterName, parameterObject) {
-	if(jBati.ParameterMapper.isScalar(parameterObject)) {
-		parameterMapper.parameters.push(parameterObject);
-	} else {
-		if(!jBati.ParameterMapper.hasProperty(parameterName, parameterObject)) {
-			throw new Error('Missing property named: ' + parameterName 
-				+ ' for object ' + parameterObject);
-		}
-		parameterMapper.parameters.push(parameterObject[parameterName]);
-	}
-};	
 
-jBati.ParameterMapper.isScalar = function(maybeScalar) {
-	if (	
-			(maybeScalar instanceof Number)  || 
-			(maybeScalar instanceof String)  ||
-			(maybeScalar instanceof Date)    ||
-			(typeof maybeScalar == 'number') ||
-			(typeof maybeScalar == 'string') ) {
-		return true;
-	}
-	return false;
-};
-
-jBati.ParameterMapper.hasProperty = function(parameterName, parameterObject) {
-	for(var i in parameterObject) {
-		if(i == parameterName) {
-			return true;
-		}
-	}
-	return false;
-};
+// factory method to generate a client
+jBati.buildSqlMapClient = function (sqlMapConfig) {
+	return new jBati.SqlMapClient(sqlMapConfig);
+}
 
 Jaxer.Log.info('Loading jbati.js complete'); 
