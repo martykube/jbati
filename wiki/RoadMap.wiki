@@ -1,0 +1,21 @@
+#Roadmap for jBati development.
+
+= Introduction =
+
+The jBati feature set is closely modeled on iBATIS.  Therefore, this road map is developed by looking at iBATIS features and deciding what to use.  The one decision is to identify which features make sense for the target platform of JavaScript/Jaxer.  The aonther decision is to identify in what order the features should be implemented.
+
+The current goal is to quickly implement the minimal set of features that makes jBati usable in a meaningful way.  This should allow for a quick release and evaluation of the usefulness of the project.
+
+jBati is composed of two main parts, the first being the user API and the second being the configuration via SQL maps.  The API is pretty clear cut and the road mapped functionality will be matched to the features supported in the sqlMap configuration.
+
+This road map will therefore focus on the sqlMap elements.  The goal is to list which elements are applicable and identify the set that will be used for the initial release.
+
+== XML config files ==
+
+The domain object mapping and database connections are specified in XML files.  The plan is to use E4X and embed the XML in JavaScript code.
+
+== sqlMapConfig ==
+
+The sqlMapConfig element handles all configuration outside of the actual sqlMap (which map SQl to domain objects).  We'll deal with this first.
+
+The plan for database connection is to use the default jaxer configured connection by default and to also allow multiple connection (via multiple SqlMapClient instances) with connection information specified in the sqlMapConfig XML elements.
