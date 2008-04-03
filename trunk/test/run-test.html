@@ -10,18 +10,18 @@
 
 		<!--
 		
-		A little wanna-be test harness. The harness will run all functions with 
+		A little test harness. The harness will run all functions with 
 		names starting with 'test'.  The harness expects that names will match 
 		this pattern:
 		
 		test<name>_<group>()
 		
-		Also, since most functions being tested are jaxer proxies, this harness 
+		For now, since most functions being tested are jaxer proxies, this harness 
 		will skip the Async versions (to keep the code here simple).
 		
 		-->
 		<script>
-					
+		  
 			function $ (id) {
 				return document.getElementById(id);
 			}
@@ -54,7 +54,7 @@
 						'<span class="test-group" id="' + g + '">' + g + '</span><br/>';
 					for each(var t in testByGroup[g].sort()) {
 						$('test-results').innerHTML += 
-							'<span class="not-tested" id="' + t.name + '">' + t.name + '</span><br/>';
+							'<span class="not-tested" id="' + t.name + '">' + t.name.split('_')[0] + '</span><br/>';
 					}
 				}
 				
@@ -88,7 +88,20 @@
 			}
 			
 			function assertEquals(actual, expected, msg) {
-				if(actual != expected) {
+				var equal = true;
+				if(typeof actual == 'object') {
+					for(var i in actual) {
+						if(actual[i] != expected[i]) {
+							equal = false;
+							break;
+						}
+					}
+				} else {
+					if(actual != expected) {
+						equal = false;
+					}
+				}
+				if(!equal) {
 					throw new Error(msg  + ', found: ' + actual + ', expected: ' + expected);
 				}
 			}

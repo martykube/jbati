@@ -40,31 +40,32 @@ function testAddParameter_ParameterMapper () {
 
 function testBind_ParameterMapper() {
 
+
 	var sql = 'select * from t where c1 = #value#';
 	var pm = jBati.ParameterMapper.bind(sql, 1);
 	assertEquals(pm.sql, 'select * from t where c1 = ?', 'Should replace one token');
 	assertEquals(pm.parameters.length, 1, 'Should have one bind param');
 	assertEquals(pm.parameters[0], 1, 'Should have 1 as bind param');
-
-	sql = 'select * from t where c1 = #value# and c2 = #value#';
+	
+	sql = 'select * from t where c1 = #fee# and c2 = #foo#';
 	pm = jBati.ParameterMapper.bind(sql, 1);
 	assertEquals(pm.sql, 'select * from t where c1 = ? and c2 = ?', 
 		'Should replace two tokens');
 	assertEquals(pm.parameters.length, 2, 'Should have two bind params');
-	assertEquals(pm.parameters[0], 1, 'Should have 1, 1 as bind params');
+	assertEquals(pm.parameters, [1, 1], 'Should have 1, 1 as bind params');
 	
-/*
 	var d = new Date();
-	var o = {
-		foo: 1,
-		bar: d,
-		baz: 'Yo!'
-	};
-	
+	var o = {foo: 1, bar: d, baz: 'Yo!'};
 	sql = 'select * from t where f = #foo# and b = #bar# and z = #baz#';
 	pm = jBati.ParameterMapper.bind(sql, o);
 	assertEquals(pm.sql, 'select * from t where f = ? and b = ? and z = ?', 
 		'Should replace three tokens');
-	assertEquals(pm.parameters, 1, d, 'Yo!'], 'Should have 1, d, Yo! as bind params');
-*/	
+	assertEquals(pm.parameters, [1, d, 'Yo!'], 'Should have 1, d, "Yo!" as parameters');
+
+	try {
+		pm = jBati.ParameterMapper.bind('select * from t where f = #foo#', {fee: 1});
+		fail('Should have found missing parameter');
+	} catch (e) {
+		;
+	}
 } 
