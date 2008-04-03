@@ -17,7 +17,7 @@ if(typeof jBati == 'undefined') {
 	var jBati = {};
 }
 
-jBati.log = new Jaxer.Log.ModuleLogger('jBati', Jaxer.Log.TRACE);
+jBati.log = new Jaxer.Log.ModuleLogger('jBati', Jaxer.Log.DEBUG);
 
 jBati.toJSON = function(object) { return Jaxer.Serialization.toJSONString(object); }
 
@@ -117,50 +117,58 @@ jBati.buildSqlMapClient = function (sqlMapConfig) {
 // ParameterMapper - translates from iBatis sql/params to jaxer sql/params
 //************************************************************************
 
-jBati.ParameterMapper = function () {};
+jBati.ParameterMapper = function () {
+	this.sql = '';
+	this.parameters = [];
+};
 
 jBati.ParameterMapper.prototype = {
-	sql: '',
-	parameters: [],
 	
 	addParameter: function(parameterName, parameterObject) {
 		if(this.isScalar(parameterObject)) {
+			jBati.log.trace('jBati.ParameterMapper.addParameter: scalar' + 
+				parameterObject[parameterName]);
 			this.parameters.push(parameterObject);
 		} else {
 			if(!this.hasProperty(parameterName, parameterObject)) {
 				throw new Error('Missing property named: ' + parameterName 
 					+ ' for object ' + parameterObject);
 			}
+			jBati.log.trace('jBati.ParameterMapper.addParameter: property' + 
+				parameterObject[parameterName]);
 			this.parameters.push(parameterObject[parameterName]);
 		}
 	},
 
 	isScalar: function(maybeScalar) {
+		var is = false;
 		if (	
 				(maybeScalar instanceof Number)  || 
 				(maybeScalar instanceof String)  ||
 				(maybeScalar instanceof Date)    ||
 				(typeof maybeScalar == 'number') ||
 				(typeof maybeScalar == 'string') ) {
-			return true;
+			is = true;
 		}
-		return false;
+		jBati.log.trace('jBati.ParameterMapper.isScalar: ' + is);
+		return is;
 	},
 
 	hasProperty: function(parameterName, parameterObject) {
+		var has = false;
 		for(var i in parameterObject) {
 			if(i == parameterName) {
-				return true;
+				has = true;
 			}
 		}
-		return false;
+		jBati.log.trace('jBati.ParameterMapper.hasProperty: ' + has);
+		return has;
 	}
 };
 
 // returns a ParameterMapper containing jaxer sql/params
 jBati.ParameterMapper.bind = function(sql, parameterObject) {
 	jBati.log.debug('jBati.ParameterMapper.bind');
-	jBati.log.debug('binding sql: ' + sql);
 	var pm = new jBati.ParameterMapper();
 	var replacementTokenRegex = /#([^#]+)#/g;
 	var matches;
@@ -172,6 +180,7 @@ jBati.ParameterMapper.bind = function(sql, parameterObject) {
 		pm.addParameter(matches[1], parameterObject);
 	}
 	pm.sql += sql.substring(copyFrom, sql.length);
+	jBati.log.trace('jBati.ParameterMapper.bind: ' + jBati.toJSON(pm));
 	return pm;
 };
 
