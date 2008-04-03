@@ -1,0 +1,108 @@
+<html>
+	<head>
+		<title>jBati Test Suite</title>
+		<style type="text/css">
+			span.not-tested {color: grey}
+			span.passed {color: black}
+			span.failed {color: red}
+			span.test-group {font-weight: bold}
+		</style>
+
+		<!--
+		
+		A little wanna-be test harness. The harness will run all functions with 
+		names starting with 'test'.  The harness expects that names will match 
+		this pattern:
+		
+		test<name>_<group>()
+		
+		Also, since most functions being tested are jaxer proxies, this harness 
+		will skip the Async versions (to keep the code here simple).
+		
+		-->
+		<script>
+					
+			function $ (id) {
+				return document.getElementById(id);
+			}
+
+			function runTest() {
+				var allTests = []; 
+				for each (var t in window) {
+					// Skip Async callbacks
+					if(typeof t == 'function' &&
+							t.name.match(/^test/) &&
+							!t.name.match(/Async$/)) {
+								
+							allTests.push(t);
+					}
+				}
+				
+				var testByGroup = [];
+				for each (var t in allTests) {
+					var nameParts = t.name.split('_');
+					if(testByGroup[nameParts[1]]) {
+						testByGroup[nameParts[1]].push(t);
+					} else {
+						testByGroup[nameParts[1]] = [];
+						testByGroup[nameParts[1]].push(t);
+					}
+				}
+				
+				for (var g in testByGroup.sort()) {
+					$('test-results').innerHTML += 
+						'<span class="test-group" id="' + g + '">' + g + '</span><br/>';
+					for each(var t in testByGroup[g].sort()) {
+						$('test-results').innerHTML += 
+							'<span class="not-tested" id="' + t.name + '">' + t.name + '</span><br/>';
+					}
+				}
+				
+				for (var g in testByGroup) {
+					for each(var t in testByGroup[g]) {
+						try {
+							t();
+							$(t.name).innerHTML += ' - passed';
+							$(t.name).className = 'passed';
+						} catch (e) {
+							$(t.name).innerHTML += ' - failed - ' + e.message;
+							$(t.name).className = 'failed';
+						}
+					}
+				}
+			}
+			
+		</script>
+		<script src="../jbati.js" runat="server"></script>
+		<script runat="server">
+  		function oncallback() {
+				if(typeof jBati == 'undefined') Jaxer.load('../jbati.js');
+			}
+		</script>
+
+		<!-- utilities for test cases -->
+		<script runat="both">
+
+			function assertTrue(val, msg) {
+				if(!val) throw new Error(msg);
+			}
+			
+			function assertEquals(actual, expected, msg) {
+				if(actual != expected) {
+					throw new Error(msg  + ', found: ' + actual + ', expected: ' + expected);
+				}
+			}
+			
+			function fail(msg) {
+				throw new Error(msg);
+			}
+		</script>
+
+		<!-- the test cases -->
+		<script src="testParameterMapper.js" runat="server-proxy"></script>
+		
+	</head>
+	<body onload="runTest()";>
+		<div id="test-results"></div>
+	</body>
+</html>

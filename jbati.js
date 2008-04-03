@@ -108,6 +108,11 @@ jBati.SqlMapClient.prototype = {
 	}
 };
 
+// factory method to generate a client (jBati.SqlMapClient)
+jBati.buildSqlMapClient = function (sqlMapConfig) {
+	return new jBati.SqlMapClient(sqlMapConfig);
+}
+
 //************************************************************************
 // ParameterMapper - translates from iBatis sql/params to jaxer sql/params
 //************************************************************************
@@ -169,11 +174,5 @@ jBati.ParameterMapper.bind = function(sql, parameterObject) {
 	pm.sql += sql.substring(copyFrom, sql.length);
 	return pm;
 };
-
-
-// factory method to generate a client
-jBati.buildSqlMapClient = function (sqlMapConfig) {
-	return new jBati.SqlMapClient(sqlMapConfig);
-}
 
 Jaxer.Log.info('Loading jbati.js complete'); 
