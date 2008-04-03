@@ -1,12 +1,18 @@
-#summary Roadmap for jBati Development.
+#summary Roadmap for jBati V1.0 Development.
 
 = Introduction =
 
-The jBati feature set is closely modeled on [http://ibatis.apache.org iBATIS].  Therefore, this road map was developed by looking at iBATIS features and deciding what to use.  One decision was to identify which features make sense for the target platform of JavaScript/Jaxer.  Another decision was to identify the order in which features should be implemented.
+The jBati feature set is closely modeled on [http://ibatis.apache.org iBATIS].  Therefore, this road map was developed by looking at iBATIS features and deciding what to include.  
 
 The current goal is to quickly implement the minimal set of features that makes jBati usable in a meaningful way.  This should allow for a quick release and evaluation of the usefulness of the project.
 
-jBati is composed of two main parts, the first being the user API and the second being the configuration via SQL maps.  The API is pretty clear cut and the road mapped functionality will be matched to the features supported in the sqlMap configuration.
+The iBATIS features are evaluated here for inclusion in jBati V1 with the following questions in mind:
+
+  * Does feature makes sense for the target platform of !JavaScript!/Jaxer/MySQL
+  * Is the feature _really_ needed to support use, or is the feature a nice to have
+  * Which features are most important for basic usage
+
+jBati is composed of two main parts, the first being the user API and the second being the configuration of domain object mapping via SQL maps.  The API is pretty clear cut and the API functionality will be matched to the features supported in the sqlMap configuration.
 
 This road map will therefore focus on sqlMap elements.  The goal is to list which elements are applicable and identify the set that will be used for the initial release.
 
@@ -28,8 +34,45 @@ The plan for database connection is to use the default Jaxer configured connecti
 || resultObjectFactory || || || N || || ||
 || typeAlias || Shorten long class names || || Y || L || A nice too have||
 || transactionManager || || || N || || defer to Jaxer txn mangement ||
-|| sqlMap || resource || Include sqlMap XML files || N || || use E4X substution for inclusion ||
+|| sqlMap || resource || Include sqlMap XML files || Y || || A nice to have ||
 || sqlMap || url || Include sqlMap XML files for URL || Y  || L || A nice to have||
 
 
 == sqlMap ==
+
+The main elements are SQL containers: <statement>, <insert>, <update>, <delete>, <select>, and <procedure>. All tags should be supported for V1 except for <procedure> which will be a have priority.  The allow tag/attributes per the iBATIS documentation should be followed.
+
+Each tag supports a combinations of methods (is the conatined query a insert, update, or delete SQL) and attributes.  V1 should support the same combinations.
+
+The <statement> tag appears to have the union of all attributes, which are evaluated in the following table:
+
+|| *Element* || *Attribute* || *Description* || *Support in V1* || *Priority* || *Comments* ||
+|| statement || id || Name of SQL || Y || H ||  ||
+|| statement || parameterClass|| Class whose parameter as bound to SQL || Y || H || ||
+|| statement || resultClass || Class constructed from result set || Y || H || ||
+|| statement || parameterMap || Detailed mapping from parameter class to SQL parameters|| N || || Use inline parameters only ||
+|| statement || resultMap || Controls mapping from result columns to object properties || N || || This might be need, not sure ||
+|| statement || cacheModel ||  ||  N || || ||
+|| statement || resultSetType|| JDBC parameter ||  N || || ||
+|| statement || fetchSize || JDBC parameter || N || || ||
+|| statement || xmlResultName || || || || ||
+|| statement || remapResults || || || || ||
+|| statement || timeout || || || || ||
+
+
+Features - 
+
+Inline parameter maps
+SQL/include fragments
+Auto generated keys
+
+
+  
+
+The following table present the evaluation for sqlMap XML element.  The list of elements can from the iBATIS [http://ibatis.apache.org/dtd/sql-map-2.dtd DTD] and the [http://svn.apache.org/repos/asf/ibatis/trunk/java/docs/en/ Data Mapper Developer Guide].
+
+
+
+
+|| *Element* || *Attribute* || *Description* || *Support in V1* || *Priority* || *Comments* ||
+|| || || || || || ||
