@@ -1,4 +1,5 @@
 #summary Roadmap for jBati V1.0 Development.
+#labels Featured
 
 == Introduction ==
 
