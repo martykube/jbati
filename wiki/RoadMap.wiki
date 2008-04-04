@@ -24,7 +24,7 @@ The domain object mapping and database connections are specified in XML files.  
 
 The sqlMapConfig element/XML file handles all configuration outside of the actual domain object mapping (sqlMap).
 
-The plan for database connections is to use the Jaxer application connection by default and to also allow multiple connections (via multiple sqlMapClient instances) with connection information specified in sqlMapConfig XML elements.  Likewise, jBati will delegate all transaction semantics to Jaxer.  The following table list the planned support from sqlMapConfig elements.
+The plan for database connections is to use the Jaxer application connection by default and to also allow multiple connections (via multiple sqlMapClient instances) with connection information specified in sqlMapConfig XML elements.  Likewise, jBati will delegate all transaction semantics to Jaxer.  The following table list the planned support for sqlMapConfig elements.
 
 
 || *Element* || *Attribute* || *Description* || *Support in V1* || *Priority* || *Comments* ||
@@ -34,28 +34,28 @@ The plan for database connections is to use the Jaxer application connection by 
 || resultObjectFactory || || || N || || ||
 || typeAlias || Shorten long class names || || Y || L || A nice to have||
 || transactionManager || || || N || || defer to Jaxer txn mangement ||
-|| sqlMap || resource || Include sqlMap XML files || Y || L || A nice to have ||
-|| sqlMap || url || Include sqlMap XML files for URL || Y  || L || A nice to have||
+|| sqlMap || resource || Include sqlMap XML from a file || Y || L || A nice to have ||
+|| sqlMap || url || Include sqlMap XML from an URL || Y  || L || A nice to have||
 
 
 == sqlMap ==
 
-The main elements are SQL containers: <statement>, <insert>, <update>, <delete>, <select>, and <procedure>.  The high level functionality supported for these element is as follows:
+The main elements are SQL containers: <statement>, <insert>, <update>, <delete>, <select>, and <procedure>.  The high level functionality supported for SQL containers is:
 
-  * Each tag supports a combination of methods (insert, select, etc., which is taken to mean which API methods can be used with the tag) and attributes.  jBati should support the same combinations.
+  * Each SQL container supports a combination of methods (insert, select, etc., which is taken to mean which API methods can be used with the SQL container).  jBati should support the same combinations as iBATIS.
+  * The same SQL container/attributes combinations as iBATIS will be supported
   * Procedure support is lower priority
-  * The same tag/attributes combinations as iBATIS will be supported
-  * Inline parameters are supported for the simple syntax (no types or defaults).  The full syntax is lower priority.
+  * Inline SQL parameters are supported for the simple syntax (no types or defaults).  The full syntax is lower priority.
   * Relationships (1:1, 1:M, and M:M) are not supported for V1
 
-Functionality supported for contained XML elements of the statement tags are:
+Functionality supported for XML elements contained within SQL container elements are:
 
   * Reuse of SQL fragments via the <include> tag will not be supported.  Reuse of XML fragment is supported by [http://rephrase.net/days/07/06/e4x  E4X variable interpolation] in XML literals.
   * Auto-generated keys should be supported for MySQL (medium priority)
   * Dynamic Mapped Statements are not supported
 
 
-Planned support for the attributes of the <statement> tags is listed in the following table:
+Planned support for the attributes of the SQL container elements is listed in the following table:
 
 || *Element* || *Attribute* || *Description* || *Support in V1* || *Priority* || *Comments* ||
 || statement || id || Name of SQL || Y || H ||  ||
