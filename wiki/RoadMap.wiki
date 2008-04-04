@@ -8,7 +8,7 @@ The current goal is to quickly implement the minimal set of features that makes 
 
 The iBATIS features are evaluated here for inclusion in jBati V1 with the following questions in mind:
 
-  * Does feature makes sense for the target platform of !JavaScript!/Jaxer/MySQL
+  * Does the feature makes sense for the target platform of !JavaScript!/Jaxer/MySQL
   * Is the feature _really_ needed to support use, or is the feature a nice to have
   * Which features are most important for basic usage
 
