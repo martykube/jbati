@@ -18,7 +18,7 @@ This road map will therefore focus on sqlMap elements.  The goal is to list whic
 
 == XML config files ==
 
-The domain object mapping and database connections are specified in XML files.  The plan is to use E4X and embed the XML in JavaScript code.
+The domain object mapping and database connections are specified in XML files.  The current plan is to use E4X and embed the XML in !JavaScript! code.
 
 == sqlMapConfig ==
 
@@ -44,17 +44,21 @@ The main elements are SQL containers: <statement>, <insert>, <update>, <delete>,
 
   * Each tag supports a combinations of methods (is the conatined query a insert, update, or delete SQL) and attributes.  V1 should support the same combinations.
   * Procedure support is lower priority
-  * The same tag/attributes will be used
+  * The same tag/attributes combinations will be supported
+  * Inline parameters are supported.  The simple syntax (no types or defaults) is required.  The full syntax is lower priority.
+  * Relationships (1:1, 1:M, and M:M) are not supported for V1
+
+Functionality supported for contained XML elements of the statement tags are:
+
   * Reuse of SQL fragments via the <include> tag will not be supported.  Reuse of XML fragment is easy with E4X.
-  * Auto-generated keys should be supported for MySQl.
-  * Inline parameters are supported.  The simple syntax (no types or defaults) is required.  the full syntax is lower priority.
+  * Auto-generated keys should be supported for MySQL (medium priority)
 
 
-The <statement> tag appears to have the union of all attributes, which are evaluated in the following table:
+The attributes which apply to the <statement> tags are which are evaluated in the following table:
 
 || *Element* || *Attribute* || *Description* || *Support in V1* || *Priority* || *Comments* ||
 || statement || id || Name of SQL || Y || H ||  ||
-|| statement || parameterClass|| Class whose parameter as bound to SQL || Y || H || ||
+|| statement || parameterClass|| Class whose parameter as bound to SQL || N || H || Not need as !JavaScript! objects are all Maps ||
 || statement || resultClass || Class constructed from result set || Y || H || ||
 || statement || parameterMap || Detailed mapping from parameter class to SQL parameters|| N || || Use inline parameters only ||
 || statement || resultMap || Controls mapping from result columns to object properties || N || || This might be need, not sure ||
@@ -65,15 +69,3 @@ The <statement> tag appears to have the union of all attributes, which are evalu
 || statement || remapResults || Hints about table name substution in SQL || N || || ||
 || statement || timeout || Overrides system default || N ||  ||  ||
 
-
-
-
-  
-
-The following table present the evaluation for sqlMap XML element.  The list of elements can from the iBATIS [http://ibatis.apache.org/dtd/sql-map-2.dtd DTD] and the [http://svn.apache.org/repos/asf/ibatis/trunk/java/docs/en/ Data Mapper Developer Guide].
-
-
-
-
-|| *Element* || *Attribute* || *Description* || *Support in V1* || *Priority* || *Comments* ||
-|| || || || || || ||
