@@ -52,6 +52,7 @@ Functionality supported for contained XML elements of the statement tags are:
 
   * Reuse of SQL fragments via the <include> tag will not be supported.  Reuse of XML fragment is easy with E4X.
   * Auto-generated keys should be supported for MySQL (medium priority)
+  * Dynamic Mapped Statements are not supported
 
 
 Planned support for the attributes of the <statement> tags is listed in the following table:
