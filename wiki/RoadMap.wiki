@@ -62,7 +62,7 @@ Planned support for the attributes of the <statement> tags is listed in the foll
 || statement || parameterClass|| Class whose parameter as bound to SQL || N || || Not need as !JavaScript objects are all Maps ||
 || statement || resultClass || Class constructed from result set || Y || H || ||
 || statement || parameterMap || Detailed mapping from parameter class to SQL parameters|| N || || Use inline parameters only ||
-|| statement || resultMap || Controls mapping from result columns to object properties || N || || This might be need, not sure ||
+|| statement || resultMap || Controls mapping from result columns to object properties || ? || || This is very useful for Java.  No sure it is need for !JavaScript ||
 || statement || cacheModel ||  ||  N || || ||
 || statement || resultSetType|| JDBC parameter ||  N || || ||
 || statement || fetchSize || JDBC parameter || N || || ||
