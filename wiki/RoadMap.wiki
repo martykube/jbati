@@ -8,29 +8,29 @@ The current goal is to quickly implement the minimal set of features that makes 
 
 The iBATIS features are evaluated here for inclusion in jBati V1 with the following questions in mind:
 
-  * Does the feature makes sense for the target platform of !JavaScript!/Jaxer/MySQL
+  * Does the feature makes sense for the target platform of !JavaScript/Jaxer/MySQL
   * Is the feature _really_ needed to support use, or is the feature a nice to have
   * Which features are most important for basic usage
 
-jBati is composed of two main parts, the first being the user API and the second being the configuration of domain object mapping via SQL maps.  The jBati API will match iBATIS in a direct manner.  The API functionality will be matched to the features supported in the sqlMap configuration.
+jBati is composed of two main parts, the first being the user API and the second being the configuration of domain object mapping via SQL maps.  The jBati API will match the iBATIS API in a direct manner.  The jBati API functionality will be matched to the features supported in the sqlMap configuration.
 
 This road map will therefore focus on sqlMap elements.  The goal is to list which elements are applicable and identify the set that will be used for the initial release.
 
 == XML config files ==
 
-The domain object mapping and database connections are specified in XML files.  The current plan is to use E4X and embed the XML in !JavaScript! code.
+The domain object mapping and database connections are specified in XML files.  The current plan is to use E4X and embed the XML in !JavaScript code.
 
 == sqlMapConfig ==
 
 The sqlMapConfig element/XML file handles all configuration outside of the actual domain object mapping (sqlMap).
 
-The plan for database connections is to use the Jaxer application connection by default and to also allow multiple connections (via multiple sqlMapClient instances) with connection information specified in sqlMapConfig XML elements.  Likewise, we'll delegate all transaction semantics to Jaxer.  The following table list the planned support from sqlMapConfig elements.
+The plan for database connections is to use the Jaxer application connection by default and to also allow multiple connections (via multiple sqlMapClient instances) with connection information specified in sqlMapConfig XML elements.  Likewise, jBati will delegate all transaction semantics to Jaxer.  The following table list the planned support from sqlMapConfig elements.
 
 
 || *Element* || *Attribute* || *Description* || *Support in V1* || *Priority* || *Comments* ||
 || properties || resource || Java properties to load || N || || ||
 || properties || name/value || Set a property || Y || H || Good place to put Jaxer connection properties ||
-|| settings ||  ||  || N || || Mostly connection pools paramaters ||
+|| settings ||  ||  || N || || Mostly connection pool parameters ||
 || resultObjectFactory || || || N || || ||
 || typeAlias || Shorten long class names || || Y || L || A nice to have||
 || transactionManager || || || N || || defer to Jaxer txn mangement ||
@@ -42,10 +42,10 @@ The plan for database connections is to use the Jaxer application connection by 
 
 The main elements are SQL containers: <statement>, <insert>, <update>, <delete>, <select>, and <procedure>.  The high level functionality supported for these element is as follows:
 
-  * Each tag supports a combinations of methods (is the conatined query a insert, update, or delete SQL) and attributes.  V1 should support the same combinations.
+  * Each tag supports a combination of methods (the contained query a select, insert, update, or delete SQL) and attributes.  jBati should support the same combinations.
   * Procedure support is lower priority
   * The same tag/attributes combinations will be supported
-  * Inline parameters are supported.  The simple syntax (no types or defaults) is needed.  The full syntax is lower priority.
+  * Inline parameters are supported for the simple syntax (no types or defaults).  The full syntax is lower priority.
   * Relationships (1:1, 1:M, and M:M) are not supported for V1
 
 Functionality supported for contained XML elements of the statement tags are:
@@ -58,7 +58,7 @@ Planned support for the attributes of the <statement> tags is listed in the foll
 
 || *Element* || *Attribute* || *Description* || *Support in V1* || *Priority* || *Comments* ||
 || statement || id || Name of SQL || Y || H ||  ||
-|| statement || parameterClass|| Class whose parameter as bound to SQL || N || || Not need as !JavaScript! objects are all Maps ||
+|| statement || parameterClass|| Class whose parameter as bound to SQL || N || || Not need as !JavaScript objects are all Maps ||
 || statement || resultClass || Class constructed from result set || Y || H || ||
 || statement || parameterMap || Detailed mapping from parameter class to SQL parameters|| N || || Use inline parameters only ||
 || statement || resultMap || Controls mapping from result columns to object properties || N || || This might be need, not sure ||
