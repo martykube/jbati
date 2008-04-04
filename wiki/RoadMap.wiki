@@ -40,9 +40,15 @@ The plan for database connection is to use the default Jaxer configured connecti
 
 == sqlMap ==
 
-The main elements are SQL containers: <statement>, <insert>, <update>, <delete>, <select>, and <procedure>. All tags should be supported for V1 except for <procedure> which will be a have priority.  The allow tag/attributes per the iBATIS documentation should be followed.
+The main elements are SQL containers: <statement>, <insert>, <update>, <delete>, <select>, and <procedure>.  The high level functionality supported for these element is as follows:
 
-Each tag supports a combinations of methods (is the conatined query a insert, update, or delete SQL) and attributes.  V1 should support the same combinations.
+  * Each tag supports a combinations of methods (is the conatined query a insert, update, or delete SQL) and attributes.  V1 should support the same combinations.
+  * Procedure support is lower priority
+  * The same tag/attributes will be used
+  * Reuse of SQL fragments via the <include> tag will not be supported.  Reuse of XML fragment is easy with E4X.
+  * Auto-generated keys should be supported for MySQl.
+  * Inline parameters are supported.  The simple syntax (no types or defaults) is required.  the full syntax is lower priority.
+
 
 The <statement> tag appears to have the union of all attributes, which are evaluated in the following table:
 
@@ -55,16 +61,11 @@ The <statement> tag appears to have the union of all attributes, which are evalu
 || statement || cacheModel ||  ||  N || || ||
 || statement || resultSetType|| JDBC parameter ||  N || || ||
 || statement || fetchSize || JDBC parameter || N || || ||
-|| statement || xmlResultName || || || || ||
-|| statement || remapResults || || || || ||
-|| statement || timeout || || || || ||
+|| statement || xmlResultName || Maps result set to XML doc || N || || ||
+|| statement || remapResults || Hints about table name substution in SQL || N || || ||
+|| statement || timeout || Overrides system default || N ||  ||  ||
 
 
-Features - 
-
-Inline parameter maps
-SQL/include fragments
-Auto generated keys
 
 
   
