@@ -3,8 +3,8 @@
 = Introduction =
 
 The design and architecture of jBati is developed here by considering:
-  * How the user will interact with the framework, which is illustrated by development of two use cases
-  * Playing nice with Jaxer.  The Jaxer architecture places constraint on the implementation, most by forcing selection of the context (browser, server, server-proxy, etc.) that section of !JavaScript code run it.
+  * How the user will interact with the framework, which is illustrated by development of two use cases.
+  * Playing nice with Jaxer.  The Jaxer architecture places constraint on the implementation, mostly by forcing selection of the context (browser, server, server-proxy, etc.) that section of !JavaScript code runs in.
   * Easing the configuration task.
 
 The main driver is ease of use by the framework's client as represented by the use cases.  The Jaxer constraints from the second point are a given.  The fact that code can run in several different context and that there is a good sized amount of configuration data (object mapping) suggest that there are many moving parts.   The jBati framework should do everything it can to make this task easy. 
@@ -12,11 +12,10 @@ The main driver is ease of use by the framework's client as represented by the u
 
 == Use cases ==
 
-=== Client builds proxy code - jBati Server Side {JSS) ===
+=== Client builds proxy code - jBati Server Side (JSS) ===
 
 === Client uses jBati supplied proxy - jBati Client Side (JCS) ===
 
 == Context Diagram ==
 
 == Configuration options ==
-
