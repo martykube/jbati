@@ -4,13 +4,33 @@
 
 The design and architecture of jBati is developed here by considering:
   * How the user will interact with the framework, which is illustrated by development of two use cases.
-  * Playing nice with Jaxer.  The Jaxer architecture places constraint on the implementation, mostly by forcing selection of the context (browser, server, server-proxy, etc.) that section of !JavaScript code runs in.
+  * Playing nice with [http://www.aptana.com/jaxer Jaxer].  The Jaxer architecture places constraint on the implementation, mostly by forcing selection of the context (browser, server, server-proxy, etc.) that section of !JavaScript code runs in.
   * Easing the configuration task.
 
 The main driver is ease of use by the framework's client as represented by the use cases.  The Jaxer constraints from the second point are a given.  The fact that code can run in several different context and that there is a good sized amount of configuration data (object mapping) suggest that there are many moving parts.   The jBati framework should do everything it can to make this task easy. 
 
 
 == Use cases ==
+
+In order for the use cases to make sense, we need to indentfy the different sections of code and the context in which the code executes.  
+
+The three main [http://www.aptana.com/node/275 context] in which !JavaScript code in a Jaxer application executes are:
+
+  # Browser
+  # Server
+    # Initial page processing
+    # [http://www.aptana.com/node/224 Callbacks]
+  # Proxied code (server side code for which Jaxer generates proxy functions on the client)
+
+The categories of code that are important from the framework design point of view are:
+
+  * Client Application - the user of the framework, code that executes within the browser and uses jBati to create an application
+  * Client Domain Objects - definition of objects used in the application for which jBati will handle persistence.
+  * Client SqlMap - configuration information supplied by the client that specifies SQL statements and the association between Client Domain Objects and SQL statements.
+  * jBati API - the functions exposed to the Client Application
+  * jBati Core - the internal jBati code that supports the jBati API.
+
+The sections of code are the actors in the following use cases.  The point of the use cases is to identify the context in which each actor operates.  This level of information is sufficient to drive the detailed design/implementation of jBati.
 
 === Client builds proxy code - jBati Server Side (JSS) ===
 
