@@ -73,6 +73,21 @@ var client = jBati.getSqlMapClient();
 var person = client.queryForObject('getPerson', 1);
 }}}
 
+The function {{{jBati.getSqlMapClient()}}} return an instance of {{{jbati.SqlMapClient}}}.  This object corresponds to a database connection and a set of mapping between user objects and SQL.  The jBati API is exposed via this object:
+{{{
+jbati.SqlMapClient.prototype = {
+  queryForObject: function(statamentID, parameterObject) {
+    ...
+  }
+  insert: function(statementID, parameterObject) {
+    ...
+  }
+  ...
+}
+}}}
+
+Where {{{statementID}}} identifies the SQL statement to be used and {{{patrameterObject}}} is the Client Domain Object to be persisted.
+
 The jBati API can be exposed in both the Browser and Server context, depending on the usage.  This is the key point of the use cases: to illustrate what support the jBati framework will need to provide when the API is exposed in these two different context.
 
 === Client builds proxy code - jBati Server Side (JSS) ===
