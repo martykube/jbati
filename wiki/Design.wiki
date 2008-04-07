@@ -142,7 +142,7 @@ The jBati API is used only on the server.  In all cases, the Client !SqlMapConfi
 The following tables summarizes the context in which categories of code will execute in:
 
 || Category || Browser || Proxy || Server ||
-|| Client Application|| X || || ||
+|| Client Application|| X || X || ||
 || Client Domain Objects|| X || || X ||
 || Client !SqlMap|| || || X || 
 || jBati API || || || X || 
