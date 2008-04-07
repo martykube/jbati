@@ -11,7 +11,7 @@ The main driver is ease of use by the framework's client as represented by the u
 
 == Use cases ==
 
-In order for the use cases to make sense, we need to indentify the different sections of code and the context in which the code section executes.  
+In order for the use cases to make sense, we need to identify the different sections of code and the context in which the code section executes.  
 
 The three main [http://www.aptana.com/node/275 context] in which !JavaScript code in a Jaxer application executes are:
 
@@ -223,6 +223,6 @@ The source for Domain object mapping is XML.  There seems to be three routes for
   * From a URL
 The URL option implies that the configuration is available from an HTTP server.  This is undesirable as database connection credentials are part of the configuration information.
 
-The main configuration item that need to be dealt with is reading the !SqlMapConfig XML at runtime.  The main complication is setting this up during server callbacks.  The configuration data needs to be reloaded on the server during Jaxer proxy callbacks with the Jaxer oncallback() function.  The user will have to supply some code to make sure the SqlMapConfig elements are loaded.
+The main configuration item that need to be dealt with is reading the !SqlMapConfig XML at runtime.  The main complication is setting this up during server callbacks.  The configuration data needs to be reloaded on the server during Jaxer proxy callbacks with the Jaxer oncallback() function.  The user will have to supply some code to make sure the !SqlMapConfig elements are loaded.
 
-This portion of the design
+_200804 - Marty - This portion of the design is not yet complete pending development of some examples_
