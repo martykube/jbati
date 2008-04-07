@@ -47,7 +47,7 @@ Person.prototype = {
 
 The domain objects generally need to be available in both the browser and server side context.
 
-The next example is a Client !SqlMap (using E4X):
+The next example is a Client !SqlMapConfig which express the mapping of SQL statements to Client Domain Objects (using E4X in this example):
 
 {{{
 var userSqlMap = 
@@ -66,7 +66,7 @@ var userSqlMap =
 </sqlMap>
 }}}
 
-The !SqlMap is used only in the Server context and is not exposed in the Browser context.  The final example shows using the jBati API to fetch a Person object with an ID of 1:
+The !SqlMapConfig is used only in the Server context and is not exposed in the Browser context.  The final example shows using the jBati API to fetch a Person object with an ID of 1:
 
 {{{
 var client = jBati.getSqlMapClient();
@@ -131,7 +131,7 @@ Person.prototype = {
 </script>
 }}}
 
-The jBati API is used only on the server.  In all cases, the Client SqlMap and the jBati Code are Server side only objects:
+The jBati API is used only on the server.  In all cases, the Client !SqlMapConfig and the jBati Code are Server side only objects:
 
 {{{
 <script src="client-object-map.js" runat="server"></script>
