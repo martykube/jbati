@@ -181,8 +181,8 @@ Each !SqlMapClient will hold a reference to it's !SqlMapConfig and return that t
 {{{
 <script runat="client">
 jBati.prototype = {
-  sqlMapConfig: '',  // Name the SqlMapConfig for for this SqlMapClient instance
-  showPerson: function(id, parameterObject) {
+  sqlMapConfig: 'config-2',  // Name the SqlMapConfig for for this SqlMapClient instance
+  queryForObject: function(id, parameterObject) {
     return _jbati_proxy_queryForObject(this, id, parameterObject);
   }
 }
