@@ -131,7 +131,7 @@ Person.prototype = {
 </script>
 }}}
 
-The jBati API is used only on the server.  In all cases, the Client !SqlMapConfig and the jBati Code are Server side only objects:
+The jBati API is used only on the server.  In all cases, the Client !SqlMapConfig and the jBati Core are Server side only objects:
 
 {{{
 <script src="client-object-map.js" runat="server"></script>
@@ -163,11 +163,11 @@ function showPerson() {
 </script>
 }}} 
 
-In this use case, the context for Client Domain Objects and the Client !SqlMap stays the same.  The main difference is that jBati has to now supply the server side functions that have Jaxer created proxies.
+In this use case, the context for Client Domain Objects and the Client !SqlMap stays the same (Server only).  The main difference is that the jBati API is exposed in the Browser context and the jBati Core needs to be exposed as Jaxer created proxies to support the jBati API.
 
-The proxy functions will have a fixed set on names and correspond to function exposed through the jBati API, client side object.  It is important to support multiple Client !SqlMaps, as the the client !SqlMaps could have different underlying database connections.
+The proxy functions will have a fixed set on names and correspond roughly to functions exposed through the jBati API client side object.  It is important to support multiple Client !SqlMapsClients, as the the client !SqlMapsConfig objects could have different underlying database connections.
 
-Mulitple Client !SqlMap will be supported by have each jBati !SqlMapClient correspond to a user supplied !SqlMapConfig.  For example:
+Mulitple Client !SqlMapClients will be supported by have each jBati !SqlMapClient correspond to a user supplied !SqlMapConfig.  For example:
 
 {{{
 <script runat="client">
@@ -189,7 +189,7 @@ jBati.prototype = {
 </script>
 }}}
 
-The jBati proxy functions will be exposed in the Browser, so care will be taken to avoid name clashes.  The implementation will be along these lines:
+The jBati Core proxy functions will be exposed in the Browser, so care needs to be taken to avoid name clashes.  The implementation will be along these lines:
 
 {{{
 <script runat="server-proxy">
@@ -198,7 +198,7 @@ _jbati_proxy_queryForObject(client, id, parameterObject) {
   var sql = config.getSqlStatementById(id);
   sql.bind(parameterObject);
   var resultSet = Jaxer.DB.execute(sql);
-  // create use result object
+  // create user domain object
   var o = objectFromResultSet(resultSet);
   return o;
 }
@@ -216,3 +216,13 @@ The following tables summarizes the context in which categories of code will exe
 
 
 == Configuration ==
+
+The source for Domain object mapping is XML.  There seems to be three routes for loading this information:
+  * Embedded in !JavaScript with E4X
+  * From the filesystem
+  * From a URL
+The URL option implies that the configuration is available from an HTTP server.  This is undesirable as database connection credentials are part of the configuration information.
+
+The main configuration item that need to be dealt with is reading the !SqlMapConfig XML at runtime.  The main complication is setting this up during server callbacks.  The configuration data needs to be reloaded on the server during Jaxer proxy callbacks with the Jaxer oncallback() function.  The user will have to supply some code to make sure the SqlMapConfig elements are loaded.
+
+This portion of the design
