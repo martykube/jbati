@@ -26,13 +26,114 @@ The categories of code that are important from the framework design point of vie
 
   * Client Application - the user of the framework, code that executes within the browser and uses jBati to create an application
   * Client Domain Objects - definition of objects used in the application for which jBati will handle persistence.
-  * Client SqlMap - configuration information supplied by the client that specifies SQL statements and the association between Client Domain Objects and SQL statements.
+  * Client !SqlMap - configuration information supplied by the client that specifies SQL statements and the association between Client Domain Objects and SQL statements.
   * jBati API - the functions exposed to the Client Application
   * jBati Core - the internal jBati code that supports the jBati API.
 
 The sections of code are the actors in the following use cases.  The point of the use cases is to identify the context in which each actor operates.  This level of information is sufficient to drive the detailed design/implementation of jBati.
 
+To make the use classes more clear, the following blocks of example code will be used.  The first example is a Client Domain Object:
+
+{{{
+function Person() {}
+Person.prototype = {
+  id: -1,
+  firstName: '',
+  lastName: '',
+  birthDate: new Date(),
+  weightInKilograms: 0,
+  heightInMeters: 0
+}
+}}}
+
+The domain object need to be available on both the browser and server side context.
+
+The next example is a Client !SqlMap (using E4X):
+
+{{{
+var userSqlMap = 
+<sqlMap namespace="Person">
+	<select id="getPerson" resultClass="examples.domain.Person">
+		SELECT 
+		PER_ID 			as id,
+		PER_FIRST_NAME 	as firstName,
+		PER_LAST_NAME 	as lastName,
+		PER_BIRTH_DATE 	as birthDate,
+		PER_WEIGHT_KG 	as weightInKilograms,
+		PER_HEIGHT_M		as heightInMeters
+		FROM person 
+		WHERE PER_ID = #value#
+	</select>
+</sqlMap>
+}}}
+
+The !SqlMap is used only in teh server contect and is not exposed in the browser context.  The final example shows using the jBati API to fetch a Person object with an ID of 1:
+
+{{{
+var client = jBati.getSqlMapClient(userSqlMap);
+var person = client.queryForObject('getPerson', 1);
+}}}
+
+The jBati API can be exposed in both the browser and server context.  This is the key point of the use cases: to illustrate what support the jBati framework will need to provide when the API is exposed in these two different context.
+
 === Client builds proxy code - jBati Server Side (JSS) ===
+
+This use case is simpler from the framework point of view.  The client designs a set of data access functions, implements them on the server side, and then lets Jaxer build client side proxies.  For example, the client could write a server side function for fetching a Person:
+
+{{{
+<script runat="server-proxy">
+function getPerson(id) {
+  var client = jBati.getSqlMapClient(userSqlMap);
+  var person = client.queryForObject('getPerson', 1);
+  return person;
+}
+</script>
+}}} 
+
+The Browser code might look like this:
+
+{{{
+<script runat="client">
+function showPerson() {
+  var person = getPerson(12);
+  document.getElementById('person-name').innerHTMML = person.firstName;
+}
+</script>
+}}} 
+
+The domain object need to be available in both the Browser and Server context:
+
+{{{
+<script runat="both">
+function Person() {}
+Person.prototype = {
+  id: -1,
+  firstName: '',
+  lastName: '',
+  birthDate: new Date(),
+  weightInKilograms: 0,
+  heightInMeters: 0
+}
+</script>
+}}}
+
+The jBati API is used only on the server.  In all cases, the Client SqlMap and the jBati Code are Server side only objects:
+
+{{{
+<script src="client-object-map.js" runat="server"></script>
+<script src="jbati.js" runat="server"></script>
+<script src="jbati-core.js" runat="server"></script>
+}}}
+
+The following tables summarieze the context in which cataegories of code will exectute in:
+
+|| Category || Browser || Proxy || Server ||
+|| Client Application|| X || || ||
+|| Client Domain Objects|| X || || X ||
+|| Client SqlMap|| || || X || 
+|| jBati API || || || X || 
+|| jBati Core|| || || X || 
+
 
 === Client uses jBati supplied proxy - jBati Client Side (JCS) ===
 
