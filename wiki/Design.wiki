@@ -1,4 +1,5 @@
 #summary jBati Design and Architecture
+#labels Featured,Phase-Design
 
 = Introduction =
 
