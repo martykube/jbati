@@ -1,18 +1,14 @@
 //
 //
-// User sqlMap and jBati client
+// User sqlMap
 //
 
 (function () {
-
-	if(typeof Examples == 'undefined') {
-		Examples = {};
-	}
 	
 	//
 	// User client for jBati built from sqlMap
 	//
-	Examples.jbatiClient = new JBati.Server.SqlMapClient ( 
+	JBati.Server.SqlMapConfig.addSqlMapConfig('ExamplesJSS', 
 	
 	<sqlMapConfig>
 		<sqlMap namespace="Person">
@@ -66,7 +62,7 @@
 	</sqlMapConfig>
 	
 	);
-	
+
 })();
 
 /* DDL for person

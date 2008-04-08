@@ -1,22 +1,22 @@
 <html>
 	<head>
-		<title>jBati Examples - jBati Server Side</title>
+		<title>jBati Examples - jBati Client Side</title>
 
 		<!--
-			-- An example of jBati server side usage
+			-- An example of jBati client side usage
 			-->
 		
 		<!-- load jBati server side framework -->
 		<script src="../../jbati-server.js" runat="server"></script>
-
+		
+		<!-- load jBati client side framework -->
+		<script src="../../jbati-client.js"></script>
+		
 		<!-- Domain objects, expose on client and server -->
-		<script src="user-objects.js" runat="both"></script>
+		<script src="../jss/user-objects.js" runat="both"></script>
 		
 		<!-- Domain objects ORM mapping, needed only on server -->
-		<script src="user-object-maps.js" runat="server"></script>
-
-		<!-- User data acess API, proxied by Jaxer -->
-		<script src="user-proxy-api.js" runat="server-proxy"></script>
+		<script src="../jss/user-object-maps.js" runat="server"></script>
 
 		<!-- Jaxer callback vodoo -->		
 		<script runat="server">
@@ -25,17 +25,16 @@
 					Jaxer.load('../../jbati-server.js');
 				}
 				if(typeof Examples == 'undefined') {
-					Jaxer.load('user-objects.js');
-					Jaxer.load('user-object-maps.js');
-					Jaxer.load('user-proxy-api.js');
+					Jaxer.load('../jss/user-objects.js');
+					Jaxer.load('../jss/user-object-maps.js');
 				}
 			}
 		</script>
-
+		
 		<!-- User Application code -->
 		<script type="text/javascript" src="/prototype.js"></script>
 		<script>
-
+		
 			//
 			// Utility functions for this example
 			//
@@ -94,34 +93,39 @@
 				$('read-msg').innerHTML   = '';
 				$('update-msg').innerHTML = '';
 			}
-
+		
 			// 
 			// Blocking server callbacks
 			//
 
-			function doDeletePerson() {
-				deletePerson(1);
+			(function() {
+				if(typeof Examples == 'undefined') {Examples = {};}
+				Examples.sqlMapClient = new JBati.Client.SqlMapClient('ExamplesJSS');
+			})();
+
+			function doDeletePerson(client) {
+				Examples.sqlMapClient.delete('deletePerson', 1);
 				$('delete-msg').innerHTML += ' - done';
 			}
-			
+
 			function doCreatePerson() {
 				var p = objectFromTable('create-table', 'Examples.Domain.Person');
-				createPerson(p);
+				Examples.sqlMapClient.insert('insertPerson', p);
 				$('create-msg').innerHTML += ' - done';
 			}
 		
 			function doReadPerson() {
-				var p = readPerson(1);
+				var p = Examples.sqlMapClient.queryForObject('getPerson', 1);
 				tableFromObject('read-table', p);
 				$('read-msg').innerHTML += ' - done';
 			}
 			
 			function doUpdatePerson() {
 				var p = objectFromTable('update-table', 'Examples.Domain.Person');
-				updatePerson(p);
+				Examples.sqlMapClient.delete('deletePerson', p);
 				$('update-msg').innerHTML += ' - done';
 			}
-			
+
 			function runExample() {
 				resetMsgs();
 				doDeletePerson();
@@ -129,7 +133,7 @@
 				doReadPerson();
 				doUpdatePerson();
 			}
-			
+		
 			//
 			// Async server callbacks
 			//
@@ -143,25 +147,25 @@
 				$('read-msg').innerHTML += ' - done';
 				// fire off update
 				var p = objectFromTable('update-table', 'Examples.Domain.Person');
-				updatePersonAsync(updatePersonCallback, p);
+				Examples.sqlMapClient.updateAsync(updatePersonCallback, 'updatePerson', p);
 			}
 			
 			function createPersonCallback() {
 				$('create-msg').innerHTML += ' - done';
 				// fire off read
-				readPersonAsync(readPersonCallBack, 1);
+				Examples.sqlMapClient.queryForObjectAsync(readPersonCallBack, 'getPerson', 1);
 			}
 
 			function deletePersonCallback() {
 				$('delete-msg').innerHTML += ' - done';
 				// fire off create
 				var p = objectFromTable('create-table', 'Examples.Domain.Person');
-				createPersonAsync(createPersonCallback, p);
+				Examples.sqlMapClient.insertAsync(createPersonCallback,'insertPerson', p);
 			}
-
+			
 			function runExampleAsync() {
 				resetMsgs();
-				deletePersonAsync(deletePersonCallback, 1);
+				Examples.sqlMapClient.deleteAsync(deletePersonCallback, 'deletePerson', 1);
 			}
 
 		</script>
@@ -231,5 +235,5 @@
 		<hr/>
 		<button onclick="runExample();">Run</button>
 		<button onclick="runExampleAsync();">Run Async</button>
-	</body>
-<html>
+</html>
+		
