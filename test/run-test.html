@@ -1,6 +1,6 @@
 <html>
 	<head>
-		<title>jBati Test Suite</title>
+		<title>JBati Test Suite</title>
 		<style type="text/css">
 			span.not-tested {color: grey}
 			span.passed {color: black}
@@ -73,10 +73,10 @@
 			}
 			
 		</script>
-		<script src="../jbati.js" runat="server"></script>
+		<script src="../jbati-server.js" runat="server"></script>
 		<script runat="server">
   		function oncallback() {
-				if(typeof jBati == 'undefined') Jaxer.load('../jbati.js');
+				if(typeof JBati == 'undefined') Jaxer.load('../jbati-server.js');
 			}
 		</script>
 
