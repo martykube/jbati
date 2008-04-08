@@ -1,14 +1,14 @@
-/*  JBati JavaScript ORM Framework, version 0.0.3
+/*  jBati JavaScript ORM Framework, version 0.0.3
  *  (c) 2008 Marty Kube <martykube@yahoo.com>
  *
- *  JBati is freely distributable under the terms of the GPL V2 license.
+ *  jBati is freely distributable under the terms of the GPL V2 license.
  *  For details, see the JBati web site: http://code.google.com/p/JBati
  *
 /*--------------------------------------------------------------------------*/
 
 (function() {
 
-	// The JBati global object
+	// The jBati global object
 	if(typeof JBati == 'undefined') { JBati = {}; }
 
 })();
@@ -19,25 +19,44 @@
 	var Server = {};
 	Server.log = new Jaxer.Log.ModuleLogger('JBati.Server', Jaxer.Log.TRACE);
 
+	/***********************************************
+	* SqlMapConfig - handles mutiple sqlMapConfig's
+	************************************************/
+
+	Server.SqlMapConfig = function() {
+		var configs = {};
+		return {
+			getSqlMapConfig: function (name) {
+				if(configs[name]) {
+					return configs[name];
+				}
+				throw new Error('could not find sqlMapConfig named: ' + name);
+			},
+			addSqlMapConfig: function (name, sqlMapConfig) {
+				configs[name] = sqlMapConfig;
+			}
+		}
+	}();
+
 	/********************************
 	* SqlMapClient
 	********************************/
 
-	Server.SqlMapClient = function (sqlMapConfig) {
-		this.config = sqlMapConfig;
+	Server.SqlMapClient = function (sqlMapConfigName) {
+		this.config = Server.SqlMapConfig.getSqlMapConfig(sqlMapConfigName);
 	};
 
-	// create
-	Server.SqlMapClient.prototype.insert = function(id, parameterObject) {
+	// Create
+	Server.SqlMapClient.prototype.insert = function(statementId, parameterObject) {
 		Server.log.debug('SqlMapClient.insert');
-		this.fetchBindExecute(id, parameterObject);	
+		this.fetchBindExecute(statementId, parameterObject);	
 	};
 
-	// read
-	Server.SqlMapClient.prototype.queryForObject = function(id, parameterObject) {
+	// Read
+	Server.SqlMapClient.prototype.queryForObject = function(statementId, parameterObject) {
 		Server.log.debug('SqlMapClient.queryForObject');
 		
-		var statement = this.getStatementById(id);
+		var statement = this.getStatementById(statementId);
 		var resultSet = this.bindExectute(statement, parameterObject);
 	
 		// Unmarshal
@@ -51,24 +70,24 @@
 		return newObject;
 	};
 
-	// update
-	Server.SqlMapClient.prototype.update = function(id, parameterObject) {
+	// Update
+	Server.SqlMapClient.prototype.update = function(statementId, parameterObject) {
 		Server.log.debug('SqlMapClient.update');
-		this.fetchBindExecute(id, parameterObject);	
+		this.fetchBindExecute(statementId, parameterObject);	
 	};
 
-	// update
-	Server.SqlMapClient.prototype.delete = function(id, parameterObject) {
+	// Delete
+	Server.SqlMapClient.prototype.delete = function(statementId, parameterObject) {
 		Server.log.debug('SqlMapClient.delete');
-		this.fetchBindExecute(id, parameterObject);	
+		this.fetchBindExecute(statementId, parameterObject);	
 	};
 
 	// fetch statement, bind parameters, and execute
-	Server.SqlMapClient.prototype.fetchBindExecute = function(id, parameterObject) {
+	Server.SqlMapClient.prototype.fetchBindExecute = function(statementId, parameterObject) {
 		Server.log.debug('SqlMapClient.fetchBindExecute');
 	
 		// fetch
-		var statement = this.getStatementById(id);
+		var statement = this.getStatementById(statementId);
 		Server.log.trace('statement: ' + statement.sql);
 		
 		return this.bindExectute(statement, parameterObject);
@@ -104,7 +123,7 @@
 	};
 
 	//************************************************************************
-	// ParameterMapper - translates from iBatis sql/params to jaxer sql/params
+	// ParameterMapper - translates from iBatis sql/params to Jaxer sql/params
 	//************************************************************************
 	
 	Server.ParameterMapper = function () {
@@ -176,3 +195,24 @@
 	JBati.Server = Server;
 
 })();
+
+
+/********************************************************
+* Dispatch callbacks from the client side implementation
+*********************************************************/
+
+function __jbati_proxy(sqlMapConfigName, clientMethodName) {
+	var client = new JBati.Server.SqlMapClient(sqlMapConfigName);
+	if (arguments.length == 3) {
+		return client[clientMethodName](arguments[2]);
+	} else if (arguments.length == 4) {
+		return client[clientMethodName](arguments[2], arguments[3]);
+	} else {
+		throw new Error(
+			'__jbati_proxy cannot dispatch, arguments.length: ' + arguments.length
+		);
+	}
+	
+}
+__jbati_proxy.proxy = true;
+
