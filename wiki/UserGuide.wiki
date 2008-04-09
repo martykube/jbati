@@ -1,0 +1,50 @@
+#summary jBati User Guide
+#labels Phase-Deploy
+
+= Status of this document =
+
+The jBati project is currently in a pre-release status.  Likewise, so is this document.  The project plan to is update this User Guide in parallel with the code development.
+
+= TOC =
+
+This document is organized into the following sections:
+
+  # Introduction
+  # Configuration
+    # !SqlMapConfig
+    # !SqlMap
+  # API
+    # Client Side API
+    # Server Side API
+
+= Introduction =
+
+jBati is a Object Relational Mapping (ORM) framework for !JavaScript programs.  !JavaScript has been used primarily as a browser scripting language.  Lately, !JavaScript has been gaining traction as a server side development language.  Once !JavaScript moves to the server side, interaction with a database becomes an important component of most applications.  Developers working on the server side use ORM frameworks to significantly improve development speed and quality as compared to the alternative of adhoc persistence frameworks.  With the introduction of !JavaScript as a server side language there is a need for !JavaScript ORM solutions.  jBati aims to fill this need.
+
+jBati is targeted to the [http://www.aptana.com/jaxer/ Jaxer] platform.  Jaxer is an AJAX server that uses !JavaScript on the server side.  Jaxer allows development of an entire application in !JavaScript and supports database interaction in !JavaScript.
+
+There is a spectrum of approaches in ORM frameworks.  In the Java world two contrasting examples are [http://www.hibernate.org/ Hibernate] and [http://ibatis.apache.org/ iBATIS].  Both of these are reasonable approaches; either one might be suitable depending on your needs (here are some recommendations on
+[http://f1.grp.yahoofs.com/v1/MDH8R9hmkRTGEMSze8SrVwVG5VWGtrX42M1PdTBIrDOGp6EFlLQq2eGMlwzU7Y6VrFQrHmNvJTjGCnfg_tMd6p6HmKWR07I/NovaJug%202007%20Persistence%20Choices.pdf choosing] 
+an ORM framework).  
+
+Hibernate falls into the Traditional ORM framework camp, which are frameworks that pretty handle all of the object life cycle details for you.  The user defines the mapping, and the framework generate SQL and often DDL, decides when object state had changed, and generally does the right thing.  The database side of the persistence model is very much encapsulated. 
+
+iBATIS falls into the SQL mapper category.  For these types of frameworks, the user defines SQL statements and a mapping to object attributes and generally handles more details of the object life cycle.
+
+Both approaches have merit and choosing the right one depends on the situation.  SQL mappers generally work better when the application has less control over the database model or when the objects have a complex relationship to database tables.
+
+jBati is a SQL mapper framework.  If a SQL mapper is the right choice for you, read on...
+
+jBati is modeled on iBATIS, which is a widely used Java ORM framework.  The intent for jBati is that the configuration and API will be a direct match to iBATIS.  The differences are driven by what makes sense for the implementation language, which is Java for iBATIS and !JavaScript for jBati.  Also, jBati is a new project and will generally have less features (at least for now).
+
+The remainder of this document is organized around the two main task that must be accomplished to use a SQL mapper ORM framework: first, the configuration to specify the SQL and it's relationship to domain objects, and second, the API that is used to deal with domain object in the application code.
+
+Before reading the details in this document, it maight make sense to take a look at a few examples (_insert reference to the examples here_).  
+
+Installation of jBati is pretty straight forward (like all !JavaScript frameworks); get the latest distribution (_insert reference to the distribution_) and deploy it on your web server.
+
+== Configuration ==
+
+
+== API ==
+
