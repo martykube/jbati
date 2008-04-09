@@ -4,15 +4,15 @@
 = Introduction =
 
 The design and architecture of jBati is developed here by considering:
-  * How the user will interact with the framework, which is illustrated by development of two use cases.
-  * Playing nice with [http://www.aptana.com/jaxer Jaxer].  The Jaxer architecture places constraint on the implementation, mostly by forcing selection of the context (browser, server, server-proxy, etc.) that sections of !JavaScript code run in.
-  * Easing the user's configuration work.
+  * User interaction with the framework, which is illustrated by development of two use cases.
+  * Platform support provided by the target platform, which is [http://www.aptana.com/jaxer Jaxer].  
+  * Configuration required by the end user.
 
-The main driver is ease of use by the framework's client as represented by the use cases.  The Jaxer constraints from the second point are a given.  The fact that code can run in several different context and that there is a good sized amount of configuration data (object mapping) suggest that there are many moving parts to configure.   The jBati framework should do everything it can to make the configuration task easy. 
+The main driver is ease of use by the framework's client as represented by use cases developed in this document.  The Jaxer architecture places constraints on the implementation, mostly by forcing selection of the context (browser, server, server-proxy, etc.) that sections of !JavaScript code run in.  The fact that code can run in several different context and that there is a good sized amount of configuration data (object mapping) suggest that there are many moving parts to configure.  The jBati framework should do everything it can to make the user's configuration task easy. 
 
 == Use cases ==
 
-In order for the use cases to make sense, we need to identify the different sections of code and the context in which the code section executes.  
+In order for the use cases to make sense, we need to identify the different sections of code and the context in which the code sections execute.  
 
 The three main [http://www.aptana.com/node/275 context] in which !JavaScript code in a Jaxer application executes are:
 
@@ -74,7 +74,7 @@ var client = jBati.getSqlMapClient();
 var person = client.queryForObject('getPerson', 1);
 }}}
 
-The function {{{jBati.getSqlMapClient()}}} return an instance of {{{jbati.SqlMapClient}}}.  This object corresponds to a database connection and a set of mapping between user objects and SQL.  The jBati API is exposed via this object:
+The function `jBati.getSqlMapClient()` returns an instance of `jbati.SqlMapClient`.  This object corresponds to a database connection and a set of mappings between user objects and SQL.  The jBati API is exposed via this object:
 {{{
 jbati.SqlMapClient.prototype = {
   queryForObject: function(statamentID, parameterObject) {
@@ -87,9 +87,76 @@ jbati.SqlMapClient.prototype = {
 }
 }}}
 
-Where {{{statementID}}} identifies the SQL statement to be used and {{{patrameterObject}}} is the Client Domain Object to be persisted.
+Where `statementID` identifies the SQL statement to be used and `patrameterObject` is the Client Domain Object to be persisted.
 
 The jBati API can be exposed in both the Browser and Server context, depending on the usage.  This is the key point of the use cases: to illustrate what support the jBati framework will need to provide when the API is exposed in these two different context.
+
+=== Client uses jBati supplied proxy - jBati Client Side (JCS) ===
+
+In this use case, the jBati API is exposed in the Browser.
+
+{{{
+<script runat="client">
+function showPerson() {
+  var client = jBati.getSqlMapClient();
+  var person = client.queryForObject('getPerson', 1);
+  document.getElementById('person-name').innerHTMML = person.firstName;
+}
+</script>
+}}} 
+
+In this use case, the context for Client Domain Objects and the Client !SqlMap is the same (Server only).  The jBati API is exposed in the Browser context and the jBati Core needs to be exposed as Jaxer created proxies to support the jBati API.
+
+The proxy functions will have a fixed set on names and correspond roughly to functions exposed through the jBati API client side object.  It is important to support multiple Client !SqlMapsClients, as the the client !SqlMapsConfig objects could have different underlying database connections.
+
+Mulitple Client !SqlMapClients will be supported by have each jBati !SqlMapClient correspond to a user supplied !SqlMapConfig.  For example:
+
+{{{
+<script runat="client">
+  var client = jBati.getSqlMapClient('defalut');
+  var otherDatabaseClient = jBati.getSqlMapClient('config-2');
+</script>
+}}}
+
+Each !SqlMapClient will hold a reference to it's !SqlMapConfig and return that to the server via the proxy call.  In this example, the !SqlMapClient method queryForObject:
+
+{{{
+<script runat="client">
+jBati.prototype = {
+  sqlMapConfig: 'config-2',  // Name the SqlMapConfig for for this SqlMapClient instance
+  queryForObject: function(id, parameterObject) {
+    return _jbati_proxy_queryForObject(this, id, parameterObject);
+  }
+}
+</script>
+}}}
+
+The jBati Core proxy functions will be exposed in the Browser, so care needs to be taken to avoid name clashes.  The implementation will be along these lines:
+
+{{{
+<script runat="server-proxy">
+_jbati_proxy_queryForObject(client, id, parameterObject) {
+  var config  = fetchSqlMapConfig(client);
+  var sql = config.getSqlStatementById(id);
+  sql.bind(parameterObject);
+  var resultSet = Jaxer.DB.execute(sql);
+  // create user domain object
+  var o = objectFromResultSet(resultSet);
+  return o;
+}
+</script>
+}}}
+
+The following tables summarizes the context in which categories of code will execute in:
+
+|| Category || Browser || Proxy || Server ||
+|| Client Application|| X || || ||
+|| Client Domain Objects|| X || || X ||
+|| Client !SqlMap|| || || X || 
+|| jBati API || X || || X || 
+|| jBati Core|| || X || X || 
+
+An example of Client Side use of jBati is shown at [http://code.google.com/p/jbati/source/browse/trunk/examples/jcs/jbati-client-side.html examples/jcs].
 
 === Client builds proxy code - jBati Server Side (JSS) ===
 
@@ -149,72 +216,7 @@ The following tables summarizes the context in which categories of code will exe
 || jBati API || || || X || 
 || jBati Core|| || || X || 
 
-
-=== Client uses jBati supplied proxy - jBati Client Side (JCS) ===
-
-In this use case, the jBati API is exposed in the Browser.
-
-{{{
-<script runat="client">
-function showPerson() {
-  var client = jBati.getSqlMapClient();
-  var person = client.queryForObject('getPerson', 1);
-  document.getElementById('person-name').innerHTMML = person.firstName;
-}
-</script>
-}}} 
-
-In this use case, the context for Client Domain Objects and the Client !SqlMap stays the same (Server only).  The main difference is that the jBati API is exposed in the Browser context and the jBati Core needs to be exposed as Jaxer created proxies to support the jBati API.
-
-The proxy functions will have a fixed set on names and correspond roughly to functions exposed through the jBati API client side object.  It is important to support multiple Client !SqlMapsClients, as the the client !SqlMapsConfig objects could have different underlying database connections.
-
-Mulitple Client !SqlMapClients will be supported by have each jBati !SqlMapClient correspond to a user supplied !SqlMapConfig.  For example:
-
-{{{
-<script runat="client">
-  var client = jBati.getSqlMapClient('defalut');
-  var otherDatabaseClient = jBati.getSqlMapClient('config-2');
-</script>
-}}}
-
-Each !SqlMapClient will hold a reference to it's !SqlMapConfig and return that to the server via the proxy call.  In this example, the !SqlMapClient method queryForObject:
-
-{{{
-<script runat="client">
-jBati.prototype = {
-  sqlMapConfig: 'config-2',  // Name the SqlMapConfig for for this SqlMapClient instance
-  queryForObject: function(id, parameterObject) {
-    return _jbati_proxy_queryForObject(this, id, parameterObject);
-  }
-}
-</script>
-}}}
-
-The jBati Core proxy functions will be exposed in the Browser, so care needs to be taken to avoid name clashes.  The implementation will be along these lines:
-
-{{{
-<script runat="server-proxy">
-_jbati_proxy_queryForObject(client, id, parameterObject) {
-  var config  = fetchSqlMapConfig(client);
-  var sql = config.getSqlStatementById(id);
-  sql.bind(parameterObject);
-  var resultSet = Jaxer.DB.execute(sql);
-  // create user domain object
-  var o = objectFromResultSet(resultSet);
-  return o;
-}
-</script>
-}}}
-
-The following tables summarizes the context in which categories of code will execute in:
-
-|| Category || Browser || Proxy || Server ||
-|| Client Application|| X || || ||
-|| Client Domain Objects|| X || || X ||
-|| Client !SqlMap|| || || X || 
-|| jBati API || X || || X || 
-|| jBati Core|| || X || X || 
-
+An example of Server Side use of jBati is shown at [http://code.google.com/p/jbati/source/browse/trunk/examples/jss/jbati-server-side.html?r=37 examples/jss].
 
 == Configuration ==
 
