@@ -80,10 +80,7 @@
 			function strFromDate(aDate) {
 				var str = '';
 				if(aDate) {
-					str += 
-					aDate.getFullYear() + 
-					(aDate.getMonth() + 1) +
-					aDate.getDate();
+					str +=  (aDate.getFullYear() +  (aDate.getMonth() + 1) + aDate.getDate());
 				}
 				return str;
 			}
@@ -93,6 +90,10 @@
 				$('create-msg').innerHTML = '';
 				$('read-msg').innerHTML   = '';
 				$('update-msg').innerHTML = '';
+			}
+			
+			function log(msg) {
+				//$('log').innerHTML = msg;
 			}
 
 			// 
@@ -123,6 +124,7 @@
 			}
 			
 			function runExample() {
+				log('runExample');
 				resetMsgs();
 				doDeletePerson();
 				doCreatePerson();
@@ -231,5 +233,6 @@
 		<hr/>
 		<button onclick="runExample();">Run</button>
 		<button onclick="runExampleAsync();">Run Async</button>
+		<div id='log'></div>
 	</body>
 <html>

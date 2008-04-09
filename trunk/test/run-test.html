@@ -27,57 +27,34 @@
 			}
 
 			function runTest() {
-				var allTests = []; 
-				for each (var t in window) {
-					// Skip Async callbacks
-					if(typeof t == 'function' &&
-							t.name.match(/^test/) &&
-							!t.name.match(/Async$/)) {
-								
-							allTests.push(t);
-					}
-				}
-				
-				var testByGroup = [];
-				for each (var t in allTests) {
-					var nameParts = t.name.split('_');
-					if(testByGroup[nameParts[1]]) {
-						testByGroup[nameParts[1]].push(t);
-					} else {
-						testByGroup[nameParts[1]] = [];
-						testByGroup[nameParts[1]].push(t);
-					}
-				}
-				
-				for (var g in testByGroup.sort()) {
+
+				var allTests = getTestCases(); 
+
+				for (var g in allTests) {
 					$('test-results').innerHTML += 
 						'<span class="test-group" id="' + g + '">' + g + '</span><br/>';
-					for each(var t in testByGroup[g].sort()) {
+					for (var i in allTests[g]) {
+						var t = allTests[g][i];
 						$('test-results').innerHTML += 
-							'<span class="not-tested" id="' + t.name + '">' + t.name.split('_')[0] + '</span><br/>';
+							'<span class="not-tested" id="' + t + '">' + t.split('_')[0] + '</span><br/>';
 					}
 				}
 				
-				for (var g in testByGroup) {
-					for each(var t in testByGroup[g]) {
+				for (var g in allTests) {
+					for (var i in allTests[g]) {
+						var t = allTests[g][i]
 						try {
-							t();
-							$(t.name).innerHTML += ' - passed';
-							$(t.name).className = 'passed';
+							eval(t + '();');
+							$(t).innerHTML += ' - passed';
+							$(t).className = 'passed';
 						} catch (e) {
-							$(t.name).innerHTML += ' - failed - ' + e.message;
-							$(t.name).className = 'failed';
+							$(t).innerHTML += ' - failed - ' + e.message;
+							$(t).className = 'failed';
 						}
 					}
 				}
 			}
 			
-		</script>
-		<script src="../jbati-server.js" runat="server"></script>
-		<script runat="server">
-  		function oncallback() {
-				if(typeof JBati == 'undefined') Jaxer.load('../jbati-server.js');
-			}
 		</script>
 
 		<!-- utilities for test cases -->
@@ -109,13 +86,24 @@
 			function fail(msg) {
 				throw new Error(msg);
 			}
+			
+			function log(msg) {
+				//$('log').innerHTML += msg + '<br/>';
+			}
 		</script>
 
 		<!-- the test cases -->
-		<script src="testParameterMapper.js" runat="server-proxy"></script>
+		<script src="../jbati-server.js" runat="server"></script>
+		<script src="testSuite.js" runat="server-proxy"></script>
+		<script runat="server">
+  		function oncallback() {
+				if(typeof JBati == 'undefined') Jaxer.load('../jbati-server.js');
+				if(typeof JBati.Test == 'undefined') Jaxer.load('testSuite.js');
+			}
+		</script>
 		
 	</head>
-	<body onload="runTest()";>
+	<body onload="runTest();">
 		<div id="test-results"></div>
 	</body>
 </html>

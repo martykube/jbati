@@ -1,10 +1,12 @@
 //
-// Test cases to jBatui.ParameterMapper
+// Test cases for jBati.ParameterMapper
 //
+
+JBati.Server.log.info('testParameterMapper.js');
 
 function testIsScalar_ParameterMapper() {
 
-	Jaxer.Log.info('testIsScalar_ParameterMapper');
+	JBati.Server.log.info('testIsScalar_ParameterMapper');
 
 	var pm = new JBati.Server.ParameterMapper();
 	assertTrue(pm.isScalar(1), '1 is a scalar');
@@ -13,10 +15,11 @@ function testIsScalar_ParameterMapper() {
 	assertTrue(pm.isScalar(new Date()), 'Date is a scalar');
 	assertTrue(pm.isScalar('Foo'), 'String is a scalar');
 }
+testIsScalar_ParameterMapper.proxy = true;
 
 function testHasProperty_ParameterMapper() {
 
-	Jaxer.Log.info('testHasProperty_ParameterMapper');
+	JBati.Server.log.info('testHasProperty_ParameterMapper');
 
 	var pm = new JBati.Server.ParameterMapper();
 	var o = {};
@@ -28,10 +31,11 @@ function testHasProperty_ParameterMapper() {
 	delete o.foo;
 	assertTrue(!pm.hasProperty('foo', o), 'prop foo should have gone away');
 }
+testHasProperty_ParameterMapper.proxy = true;
 
 function testAddParameter_ParameterMapper () {
 
-	Jaxer.Log.info('testAddParameter_ParameterMapper');
+	JBati.Server.log.info('testAddParameter_ParameterMapper');
 
 	var pm = new JBati.Server.ParameterMapper();
 	assertTrue(pm.parameters.length == 0 , 'Should be no params');
@@ -46,10 +50,11 @@ function testAddParameter_ParameterMapper () {
 		fail('notAParam is not a property of o');
 	} catch (e) {}
 }
+testAddParameter_ParameterMapper.proxy = true;
 
 function testBind_ParameterMapper() {
 
-	Jaxer.Log.info('testBind_ParameterMapper');
+	JBati.Server.log.info('testBind_ParameterMapper');
 
 	var sql = 'select * from t where c1 = #value#';
 	var pm = JBati.Server.ParameterMapper.bind(sql, 1);
@@ -89,4 +94,16 @@ function testBind_ParameterMapper() {
 		;
 	}
 */
-} 
+}
+testBind_ParameterMapper.proxy = true;
+ 
+(function () {
+	JBati.Test.ParameterMapper = [
+		testIsScalar_ParameterMapper.name,
+		testHasProperty_ParameterMapper.name,
+		testAddParameter_ParameterMapper.name,
+		testBind_ParameterMapper.name
+	];
+	JBati.Server.log.info('Loaded JBati.Test.ParameterMapper: ' +
+		JBati.Test.ParameterMapper);
+})();
