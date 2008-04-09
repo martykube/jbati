@@ -35,9 +35,9 @@ Both approaches have merit and choosing the right one depends on the situation. 
 
 jBati is a SQL mapper framework.  If a SQL mapper is the right choice for you, read on...
 
-jBati is modeled on iBATIS, which is a widely used Java ORM framework.  The intent for jBati is that the configuration and API is a direct match to iBATIS.  The differences are driven by what makes sense for the implementation language, which is Java for iBATIS and !JavaScript for jBati.  Also, jBati is a new project and will generally have less features (at least for now).
+jBati is modeled on iBATIS, which is a widely used Java ORM framework.  The intent for jBati is that the configuration and API be a direct match to iBATIS.  The differences are driven by what makes sense for the implementation language, which is Java for iBATIS and !JavaScript for jBati.  Also, jBati is a newer project and will generally have less features (at least for now).
 
-The remainder of this document is organized around the two main task that must be accomplished to use a SQL mapper ORM framework: first, the configuration to specify the SQL and it's relationship to domain objects, and second, the API that is used to deal with domain object in the application code.
+The remainder of this document is organized around the two main task that must be accomplished to use a SQL mapper ORM framework: first, the configuration to specify the SQL and it's relationship to domain objects, and second, the API that is used to access domain objects in application code.
 
 Before reading the details in this document, it might make sense to take a look at a few examples (_insert reference to the examples here_).  
 
