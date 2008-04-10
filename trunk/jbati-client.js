@@ -50,12 +50,12 @@
 	}
 	
 	// Delete
-	Client.SqlMapClient.prototype.delete = function(statementId, parameterObject) {
-		return __jbati_proxy(this.sqlMapConfigName, 'delete', statementId, parameterObject);
+	Client.SqlMapClient.prototype.remove = function(statementId, parameterObject) {
+		return __jbati_proxy(this.sqlMapConfigName, 'remove', statementId, parameterObject);
 	}
 
-	Client.SqlMapClient.prototype.deleteAsync = function(callback, statementId, parameterObject) {
-		return __jbati_proxyAsync(callback, this.sqlMapConfigName, 'delete', statementId, parameterObject);
+	Client.SqlMapClient.prototype.removeAsync = function(callback, statementId, parameterObject) {
+		return __jbati_proxyAsync(callback, this.sqlMapConfigName, 'remove', statementId, parameterObject);
 	}
 
 	JBati.Client = Client;

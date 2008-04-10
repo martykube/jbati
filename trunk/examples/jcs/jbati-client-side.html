@@ -104,7 +104,7 @@
 			})();
 
 			function doDeletePerson(client) {
-				Examples.sqlMapClient.delete('deletePerson', 1);
+				Examples.sqlMapClient.remove('deletePerson', 1);
 				$('delete-msg').innerHTML += ' - done';
 			}
 
@@ -122,7 +122,7 @@
 			
 			function doUpdatePerson() {
 				var p = objectFromTable('update-table', 'Examples.Domain.Person');
-				Examples.sqlMapClient.delete('deletePerson', p);
+				Examples.sqlMapClient.update('updatePerson', p);
 				$('update-msg').innerHTML += ' - done';
 			}
 
@@ -165,7 +165,7 @@
 			
 			function runExampleAsync() {
 				resetMsgs();
-				Examples.sqlMapClient.deleteAsync(deletePersonCallback, 'deletePerson', 1);
+				Examples.sqlMapClient.removeAsync(deletePersonCallback, 'deletePerson', 1);
 			}
 
 		</script>
