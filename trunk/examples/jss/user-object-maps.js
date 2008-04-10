@@ -8,8 +8,7 @@
 	//
 	// User client for jBati built from sqlMap
 	//
-	JBati.Server.SqlMapConfig.addSqlMapConfig('ExamplesJSS', 
-	
+var config = 	
 	<sqlMapConfig>
 		<sqlMap namespace="Person">
 		
@@ -61,7 +60,7 @@
 		</sqlMap>
 	</sqlMapConfig>
 	
-	);
+	JBati.Server.SqlMapClientBuilder.buildSqlMapClient('ExamplesJSS', config.toXMLString());
 
 })();
 

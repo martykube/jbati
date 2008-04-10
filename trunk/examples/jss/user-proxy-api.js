@@ -6,7 +6,7 @@
 (function () {
 
 	if(typeof Examples == 'undefined') { Examples = {}; }
-	Examples.sqlMapClient = new JBati.Server.SqlMapClient('ExamplesJSS'); 
+	Examples.sqlMapClient = JBati.Server.SqlMapClientBuilder.getSqlMapClient('ExamplesJSS'); 
 
 })();
 

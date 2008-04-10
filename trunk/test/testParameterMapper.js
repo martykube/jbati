@@ -1,5 +1,5 @@
 //
-// Test cases for jBati.ParameterMapper
+// Test cases for jBati.Server.ParameterMapper
 //
 
 JBati.Server.log.info('testParameterMapper.js');
