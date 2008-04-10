@@ -27,7 +27,7 @@ function updatePerson(parameterObject) {
 
 function deletePerson(parameterObject) {
 	Jaxer.Log.info('deletePerson: parameterObject: ' + parameterObject);
-	return Examples.sqlMapClient.delete('deletePerson', parameterObject);
+	return Examples.sqlMapClient.remove('deletePerson', parameterObject);
 };
 
 createPerson.proxy = readPerson.proxy = updatePerson.proxy = deletePerson.proxy = true;

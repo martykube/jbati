@@ -77,8 +77,8 @@
 	};
 
 	// Delete
-	Server.SqlMapClient.prototype.delete = function(statementId, parameterObject) {
-		Server.log.debug('SqlMapClient.delete');
+	Server.SqlMapClient.prototype.remove = function(statementId, parameterObject) {
+		Server.log.debug('SqlMapClient.remove');
 		this.fetchBindExecute(statementId, parameterObject);	
 	};
 
