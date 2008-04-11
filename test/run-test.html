@@ -93,11 +93,11 @@
 		</script>
 
 		<!-- the test cases -->
-		<script src="../jbati-server.js" runat="server"></script>
+		<script src="../lib/jbati-server.js" runat="server"></script>
 		<script src="testSuite.js" runat="server-proxy"></script>
 		<script runat="server">
   		function oncallback() {
-				if(typeof JBati == 'undefined') Jaxer.load('../jbati-server.js');
+				if(typeof JBati == 'undefined') Jaxer.load('../lib/jbati-server.js');
 				if(typeof JBati.Test == 'undefined') Jaxer.load('testSuite.js');
 			}
 		</script>
