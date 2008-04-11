@@ -7,10 +7,10 @@
 			-->
 		
 		<!-- load jBati server side framework -->
-		<script src="../../jbati-server.js" runat="server"></script>
+		<script src="../../lib/jbati-server.js" runat="server"></script>
 		
 		<!-- load jBati client side framework -->
-		<script src="../../jbati-client.js"></script>
+		<script src="../../lib/jbati-client.js"></script>
 		
 		<!-- Domain objects, expose on client and server -->
 		<script src="../jss/user-objects.js" runat="both"></script>
@@ -22,7 +22,7 @@
 		<script runat="server">
   		function oncallback() {
 				if(typeof JBati == 'undefined') {
-					Jaxer.load('../../jbati-server.js');
+					Jaxer.load('../../lib/jbati-server.js');
 				}
 				if(typeof Examples == 'undefined') {
 					Jaxer.load('../jss/user-objects.js');
