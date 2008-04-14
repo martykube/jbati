@@ -8,7 +8,7 @@
  /**********************************************************************/
 
 (function() {
-
+  
 	if(typeof JBati == 'undefined') { JBati = {};}
 	
 	// namespace: JBati.Server
@@ -66,7 +66,7 @@
 				var configName = (arguments.length == 1 ? DEFAULT_CONFIGURATION : nameOrXml);
 				var sqlMapConfig = (arguments.length == 1 ?  nameOrXml : xml);
 				configurations[configName] = sqlMapConfig;
-				return new Server.SqlMapClient(sqlMapConfig);
+				return new Server.SqlMapClient(new Server.SqlMapConfig(sqlMapConfig));
 			},
 
 
@@ -87,13 +87,163 @@
 				var config;
 				var configName = (arguments.length == 0 ? DEFAULT_CONFIGURATION :	name);
 				if((config = configurations[configName])) {
-					return new Server.SqlMapClient(config);
+					return new Server.SqlMapClient(new Server.SqlMapConfig(config));
 				}
 				throw new Error('SqlMapClientBuilder coulnd not find a sqlMapConfig for name: ' + name);
 			}
 		};
 	})();
 
+	
+	// class JBati.SqlMapConfig
+	// Reads sqlMapConfig XML, loads the included sqlMap elements, and supports
+	// querries for statements.
+	
+	// constructor: SqlMapConfig
+	// Create a SqlMapConfig from sqlMapConfig XML.  This method accepts a complete
+	// XML including a xml processing instruction and a DOCTYPE declaration (both
+	// or which are ignored).  The document element must be a <sqlMapConfig> 
+	// element.
+	//
+	// Parameters:
+	// sqlMapConfigXMLString - XML string for a sqlMapConfig
+	//
+	var SqlMapConfig = Server.SqlMapConfig = function(sqlMapConfigXMLString) {
+	
+		Server.log.debug('SqlMapConfig: constructor');
+		
+		sqlMapConfigXMLString	= SqlMapConfig.cleanUpXml(sqlMapConfigXMLString, 'sqlMapConfig');
+		this.config = new XML(sqlMapConfigXMLString);
+
+		Server.log.trace('SqlMapConfig: config: ' + this.config.toXMLString());
+		Server.log.trace('SqlMapConfig: Contained sqlMap(s): ' +  (this.config.sqlMap).toXMLString());
+
+		for each (var sqlMap in this.config.sqlMap) {
+			this.maps.push(new SqlMap(sqlMap));
+		}
+	}
+	
+	// method: cleanUpXml
+	// Removes a leading xml processing instruction and DOCTYPE declaration if present.
+	//
+	// Parameters:
+	//	xmlString - The XML (as a string) to be cleaned up
+	//	rootElement - The document element tage name
+	//
+	// Returns:
+	//	The XML string with offending items removed
+	//
+	SqlMapConfig.cleanUpXml = function(xmlString, rootElement) {
+		var cleanUp = new RegExp('<\s*' + rootElement, 'g');
+		var match = cleanUp.exec(xmlString);
+		if(!match) {
+			throw new Error('SqlMapConfig.cleanUpXml - missing root element: ' +  rootElement);
+		} 
+		xmlString =  xmlString.substring(
+				cleanUp.lastIndex - match[0].length, xmlString.length);
+		return xmlString;
+	}
+
+	SqlMapConfig.prototype = {
+	
+		// property: config
+		// The sqlMapConfig as an XML object.
+		//
+		config: new XML(),
+		
+		// property: maps
+		// Included sqlMaps as <SqlMap> objects.
+		//
+		maps: [],
+	
+		// method: toXMLString
+		// Show the underlying XML sqlMapConfig document as a string.
+		//
+		// Returns:
+		// 	A XML string.
+		//
+		toXMLString: function() {
+			return this.config.toXMLString();
+		},
+
+		// method: getStatementById
+		// Fetches a SQL statement from the supporting SqlMap of this client.
+		//
+		// Parameters:
+		//	statementId - The name of the SQL statement.
+		//
+		// Returns:
+		//	The statement XML object.
+		//
+		getStatementById: function(statementId) {
+			Server.log.debug('SqlMapConfig.getStatementById');
+			Server.log.trace('SqlMapConfig.config: \n' + this.config.toXMLString());
+			
+			var statement = this.config.sqlMap.*.(@id == statementId);
+			Server.log.trace('statement: ' + statement.toXMLString());
+			
+			if(statement.length() != 1) {		
+				throw new Error('SqlMapConfig.getStatementById: ' + 
+				'Could not find statament for id: ' + statementId);
+			}
+			return statement;
+		}
+	};
+		
+		
+	// class: JBati.Server.SqlMap
+	// Represents an instance of a sqlMap.
+	
+	// constructor: SqlMap 
+	// Create a new instance from the sqlMap XML reference element (in sqlMapConfig).
+	// Read the refered to XML document.
+	//
+	// Parameters:
+	//	sqlMap - The sqlMap XML object in a sqlMapConfig XML document
+	//
+	var SqlMap = Server.SqlMap = function(sqlMap) {
+
+		Server.log.debug('SqlMap: ' + sqlMap.toXMLString());
+		this.configReference = sqlMap;
+
+		if(this.configReference.@resource) {
+			Server.log.trace('SqlMap: Resolving path to resource: ' + this.configReference.@resource);
+			var path = Jaxer.Dir.resolvePath(this.configReference.@resource);
+			Server.log.trace('SqlMap: Resolved path: ' + path);
+			var theFile = new Jaxer.File(path);
+			if(theFile.exists()){
+				if(theFile.isReadable()) {
+					theFile.open('r');
+					var contents = theFile.read();
+					Server.log.trace('SqlMap: xml: ' + contents);
+					contents = SqlMapConfig.cleanUpXml(contents, 'sqlMap');
+					this.config = new XML(contents);
+					theFile.close();
+				} else {
+					throw new Error('SqlMap: file is not readable: ' + path);
+				}
+			} else {
+				throw new Error('SqlMap: file does not exist: ' + path);
+			}
+		} else {
+			throw new Error('SqlMap - don\'t know how to include sqlMap: ' + 
+				this.configReference.toXMLString());
+		}
+
+	}
+	
+	SqlMap.prototype = {
+		
+		// property: reference
+		// The sqlMap reference (from a sqlMapConfig file) as an XML object.
+		configReference: new XML(),
+		
+		// property: config
+		// The sqlMap as an XML object.
+		config: new XML()
+	
+	};
+		
 	// class: JBati.Server.SqlMapClient
 	// Provides the user API for executing SQL statements on the server side
 	// and supporting implementation on the server side.
@@ -106,11 +256,10 @@
 	// <SqlMapClientBuilder.getSqlMapClient> instead.
 	//
 	// Parameters:
-	//	sqlMapConfig - The sqlMapConfig file as a string
+	//	sqlMapConfig - A <SqlMapConfig> instance.
 	//
 	var SqlMapClient = Server.SqlMapClient = function (sqlMapConfig) {
-		Server.log.trace('SqlMapClient(): ' + sqlMapConfig);
-		this.config = new XML(sqlMapConfig);
+		this.sqlMapConfig = sqlMapConfig;
 	};
 	
 	SqlMapClient.prototype = {
@@ -129,7 +278,7 @@
 		queryForObject: function(statementId, parameterObject) {
 			Server.log.debug('SqlMapClient.queryForObject');
 			
-			var statement = this.getStatementById(statementId);
+			var statement = this.sqlMapConfig.getStatementById(statementId);
 			var resultSet = this.bindExectute(statement, parameterObject);
 			
 			// Unmarshal
@@ -174,7 +323,7 @@
 			Server.log.debug('SqlMapClient.fetchBindExecute');
 			
 			// fetch
-			var statement = this.getStatementById(statementId);
+			var statement = this.sqlMapConfig.getStatementById(statementId);
 			Server.log.trace('statement: ' + statement.sql);
 			
 			return this.bindExectute(statement, parameterObject);
@@ -203,30 +352,8 @@
 			var resultSet = Jaxer.DB.execute(boundStatement.sql, boundStatement.parameters);
 			
 			return resultSet;
-		},
-
-		// method: getStatementById
-		// Fetches a SQL statement from the supporting SqlMap of this client.
-		//
-		// Parameters:
-		//	statementId - The name of the SQL statement.
-		//
-		// Returns:
-		//	The statement XML object.
-		//
-		getStatementById: function(statementId) {
-			Server.log.debug('SqlMapClient.getStatementById');
-			Server.log.trace('SqlMapClient.config: \n' + this.config.toXMLString());
-			
-			var statement = this.config.sqlMap.*.(@id == statementId);
-			Server.log.trace('statement: ' + statement.toXMLString());
-			
-			if(statement.length() != 1) {		
-				throw new Error('SqlMapConfig.getStatementById: ' + 
-				'Could not find statament for id: ' + statementId);
-			}
-			return statement;
 		}
+
 	};
 
 
