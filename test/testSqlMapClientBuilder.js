@@ -4,37 +4,52 @@
 
 JBati.Server.log.info('testSqlMapClientBuilder');
 
-var cb = JBati.Server.SqlMapClientBuilder;
+var js = JBati.Server;
+var cb = js.SqlMapClientBuilder;
 
+// test creation of SqlMapClients
 function testBuildSqlMapClient_SqlMapClientBuilder() {
   
-	JBati.Server.log.info('testBuildSqlMapClient_SqlMapClientBuilder');
+	js.log.info('testBuildSqlMapClient_SqlMapClientBuilder');
 
-  var client = cb.buildSqlMapClient('aName', '<sqlMapConfig/>');
+	var xml = <sqlMapConfig/>;
+  var client = cb.buildSqlMapClient('aName', xml.toXMLString());
   
-  assertEquals(client.config.toXMLString(),  new XML('<sqlMapConfig/>').toXMLString(), 
-	      'Configuration did not match');
+  assertEquals(
+  	client.sqlMapConfig.toXMLString(),  
+		xml.toXMLString(), 
+		'New aName configuration did not match');
 
-	client = cb.buildSqlMapClient('<sqlMapConfig/>');
-  assertEquals(client.config.toXMLString(),  new XML('<sqlMapConfig/>').toXMLString(), 
-	      'Configuration did not match');
-	
+	client = cb.buildSqlMapClient(xml.toXMLString());
+  assertEquals(
+  	client.sqlMapConfig.toXMLString(),  
+  	xml.toXMLString(), 
+		'New default configuration did not match');	
 }
 testBuildSqlMapClient_SqlMapClientBuilder.proxy = true;
 
-
+// test fetch of existing SqlMapClients
 function testGetSqlMapClient_SqlMapClientBuilder() {
 
 	JBati.Server.log.info('testGetSqlMapClient_SqlMapClientBuilder');
 
-  cb.buildSqlMapClient('aName', '<sqlMapConfig/>');
+	var xml_1 = <sqlMapConfig/>;
+  cb.buildSqlMapClient('aName', xml_1.toXMLString());
+	var xml_2 = 
+		<sqlMapConfig><sqlMap/></sqlMapConfig>;
+  cb.buildSqlMapClient(xml_2.toXMLString());
+  
   var client = cb.getSqlMapClient('aName');
-  assertTrue(typeof client != 'undefined', 'Did not fetch client for aName');
+  assertEquals(
+  	client.sqlMapConfig.toXMLString(),  
+		xml_1.toXMLString(), 
+		'aName configuration did not match');
 
-  cb.buildSqlMapClient('<sqlMapConfig/>');
 	client = cb.getSqlMapClient();
-  assertTrue(typeof client != 'undefined', 'Did not fetch default client');
-
+  assertEquals(
+  	client.sqlMapConfig.toXMLString(),  
+		xml_2.toXMLString(), 
+		'Default configuration did not match');
 }
 testGetSqlMapClient_SqlMapClientBuilder.proxy = true;
 	
