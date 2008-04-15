@@ -1,0 +1,3 @@
+<sqlMapConfig>
+	<sqlMap resource="person.xml"/>
+</sqlMapConfig>

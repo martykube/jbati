@@ -40,9 +40,16 @@
 					}
 				}
 				
-				for (var g in allTests) {
-					for (var i in allTests[g]) {
-						var t = allTests[g][i]
+				for (var group in allTests) {
+					for (var i in allTests[group]) {
+					
+						// setUp
+						if(typeof this['setUp_' + group] == 'function') {
+							this['setUp_' + group]();
+						}
+					
+						// run test
+						var t = allTests[group][i]
 						try {
 							eval(t + '();');
 							$(t).innerHTML += ' - passed';
@@ -51,6 +58,11 @@
 							$(t).innerHTML += ' - failed - ' + e.message;
 							$(t).className = 'failed';
 						}
+					
+						// tear down
+						if(typeof this['tearDown_' + group] == 'function') {
+							this['tearDown_' + group]();
+						}
 					}
 				}
 			}
@@ -58,7 +70,7 @@
 		</script>
 
 		<!-- utilities for test cases -->
-		<script runat="both">
+		<script runat="server">
 
 			function assertTrue(val, msg) {
 				if(!val) throw new Error(msg);
@@ -81,10 +93,6 @@
 				if(!equal) {
 					throw new Error(msg  + ', found: ' + actual + ', expected: ' + expected);
 				}
-			}
-			
-			function fail(msg) {
-				throw new Error(msg);
 			}
 			
 			function log(msg) {
