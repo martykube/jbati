@@ -1,6 +1,8 @@
 #summary jBati User Guide
 #labels Phase-Deploy
 
+Last update: 20080412
+
 = Status of this document =
 
 The jBati project is currently in a pre-release status.  Likewise, so is this document.  The project plan to is update this User Guide in parallel with the code development.
