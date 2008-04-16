@@ -1,6 +1,8 @@
 #summary jBati Design and Architecture
 #labels Featured,Phase-Design
 
+Last update: 20080408
+
 = Introduction =
 
 The design and architecture of jBati is developed here by considering:
