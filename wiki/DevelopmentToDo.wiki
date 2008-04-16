@@ -12,6 +12,7 @@ This is a working document which list development activities which could be done
   # get version number API docs
   # relate menus to files
   # finish developers guide
+  # fix up svn to put last update date in document
  # code
   # SqlMapClient
    # build out user API
