@@ -86,7 +86,7 @@ function testBind_ParameterMapper() {
 	}
 	
 	// Scalar undefined property, null property, and no property
-/*
+/* TODO: Finish this test
 	try {
 		pm = JBati.Server.ParameterMapper.bind('select * from t where f = #foo#', notAVariable);
 		fail('Should have found missing parameter');

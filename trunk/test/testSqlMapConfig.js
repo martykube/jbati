@@ -180,14 +180,6 @@ function tearDown_SqlMapConfig() {
 }
 tearDown_SqlMapConfig.proxy = true;
 
-function removeIfExists(fileOrDir) {
-	if(fileOrDir.exists()) fileOrDir.remove();
-}
-
-function createIfNotExists(fileOrDir) {
-	if(!fileOrDir.exists()) fileOrDir.create();
-}
-
 //
 // Create tests
 //

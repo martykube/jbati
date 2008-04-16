@@ -80,16 +80,6 @@ function tearDown_SqlMapClientBuilder() {
 }
 tearDown_SqlMapClientBuilder.proxy = true;
 
-function removeIfExists(fileOrDir) {
-	JBati.Server.log.debug('removeIfExists: ' + fileOrDir.getPath());
-	if(fileOrDir.exists()) fileOrDir.remove();
-}
-
-function createIfNotExists(fileOrDir) {
-	JBati.Server.log.debug('createIfNotExists: ' + fileOrDir.getPath());
-	if(!fileOrDir.exists()) fileOrDir.create();
-}
-
 //
 // test creation of SqlMapClients
 //
