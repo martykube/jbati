@@ -14,7 +14,7 @@ This is a working document which list development activities which could be done
   # finish developers guide
   # fix up svn to put last update date in document
  # code
-  # SqlMapClient
+  # !SqlMapClient
    # build out user API
    # accept list of scalar parameters for binding
    # queryForList - skip and limit parameters
