@@ -53,6 +53,15 @@ JBati.Server.log.info('testSqlMapClient');
 	if(typeof Examples == 'undefined') {Examples = {};}
 	Examples.Domain = {};
 	Examples.Domain.Person = function () {}
+	Examples.Domain.Person.prototype.toString = function() {
+		var strParts = [];
+		for(var i in this) {
+			if(typeof this[i] != 'function') {
+				strParts.push( i + '=>' + this[i]);
+			}
+		}
+		return '[Person: ' + strParts.join('; ') + ']';
+	}
 	
 })();
 
@@ -139,6 +148,18 @@ function setUp_SqlMapClient() {
 		'		WHERE PER_ID = #value#\n'+
 		'	</select>\n'+
 		'	\n'+
+		'	<select id="getSeveralPerson" resultClass="Examples.Domain.Person">\n'+
+		'		SELECT \n'+
+		'		PER_ID 			as id,\n'+
+		'		PER_FIRST_NAME 	as firstName,\n'+
+		'		PER_LAST_NAME 	as lastName,\n'+
+		'		PER_BIRTH_DATE 	as birthDate,\n'+
+		'		PER_WEIGHT_KG 	as weightInKilograms,\n'+
+		'		PER_HEIGHT_M		as heightInMeters\n'+
+		'		FROM jbati_test_person \n'+
+		'		WHERE PER_ID between #low_id# and #high_id# \n'+
+		'	</select>\n'+
+		'	\n'+
 		'	<insert id="insertPerson">\n'+
 		'		INSERT INTO jbati_test_person (\n'+
 		'			PER_ID, PER_FIRST_NAME, PER_LAST_NAME, \n'+
@@ -184,29 +205,26 @@ function tearDown_SqlMapClient() {
 tearDown_SqlMapClient.proxy = true;
 
 
-function removeIfExists(fileOrDir) {
-	JBati.Server.log.debug('removeIfExists: ' + fileOrDir.getPath());
-	if(fileOrDir.exists()) fileOrDir.remove();
-}
-
-
-function createIfNotExists(fileOrDir) {
-	JBati.Server.log.debug('createIfNotExists: ' + fileOrDir.getPath());
-	if(!fileOrDir.exists()) fileOrDir.create();
-}
-
-
 //
 // QueryForObject
 //
 function testQueryForObject_SqlMapClient() {
-
-	var client = new JBati.Server.SqlMapClientBuilder.buildSqlMapClient(
-		JBati.tsmClient.sqlMapConfigUrl);
 		
+	var client = new JBati.Server.SqlMapClientBuilder.buildSqlMapClient(
+			JBati.tsmClient.sqlMapConfigUrl);
+
 	// query with scalar parameter
 	var person1 = client.queryForObject('getPerson', 1);
 	assertEquals(person1.id, 1, 'Person1 id should be 1');
+
+	// query returns an Object, check setting of fields
+	var person7 = client.queryForObject('getObjectForPerson', 202);
+	assertEquals(person7.id, 202, 'Person7 id did not match');
+	assertEquals(person7.firstName, 'Wyatt', 'Person7 firstName did not match');
+	assertEquals(person7.lastName, 'Frager', 'Person7 lastName did not match');
+	assertEquals(person7.birthDate, new Date(1978, 4, 5), 'Person7 birthDate did not match');
+	assertEquals(person7.weightInKilograms, 100, 'Person7 weightInKilograms did not match');
+	assertEquals(person7.heightInMeters, .9, 'Person7 heightInMeters did not match');
 
 	/* TODO: make array of scalars work
 	var person2 = client.queryForObject('getPerson', [1]);
@@ -240,22 +258,127 @@ function testQueryForObject_SqlMapClient() {
 	} catch (e) {
 		;
 	}
-	
-	// query that populates an Object
-	/* TODO - make this work
-	var person7 = client.queryForObject('getPerson', 1);
-	assertEquals(person1.id, 1, 'Person7 id should be 1');	
-	*/
 		
+	// query after a thrown error
+	var person10 = client.queryForObject('getPerson', 407);
+	assertEquals(person10.id, 407, 'Person10 id should be 407');
+
 }
 testQueryForObject_SqlMapClient.proxy = true;
 
+//
+// insert
+//
+function testInsert_SqlMapClient() {
 
+	var client = new JBati.Server.SqlMapClientBuilder.buildSqlMapClient(
+			JBati.tsmClient.sqlMapConfigUrl);
 
+	// insert, then read back to confirm value mapping
+	var personParams = {
+		id: 1001, 
+		firstName: 'Bob',
+		lastName: 'Jones',
+		birthDate: new Date(1975, 2, 13),
+		weightInKilograms: 82.45,
+		heightInMeters: 1.88
+	};
+	
+	client.insert('insertPerson', personParams);	
+	
+	var row = Jaxer.DB.execute('select * from jbati_test_person where per_id = ?', 1001).rows[0];
+	assertEquals(row.per_id, personParams.id, 'Did not match personParams.id');
+	assertEquals(row.per_first_name, personParams.firstName, 'Did not match personParams.firstName');
+	assertEquals(row.per_last_name, personParams.lastName, 'Did not match personParams.lastName');
+	assertEquals(row.per_birth_date, personParams.birthDate, 'Did not match personParams.birthDate');
+	assertEquals(row.per_weight_kg, personParams.weightInKilograms, 'Did not match personParams.weightInKilograms');
+	assertEquals(row.per_height_m, personParams.heightInMeters, 'Did not match personParams.heightInMeters');
+	
+	// insert missing required parameters
+	delete personParams.birthDate;
+	try {
+		client.insert('insertPerson', personParams);	
+		fail('Should have raised an error for missing parameters');
+	} catch(e) {
+		;
+	}
+	
+	// insert after a raised exception
+	personParams.birthDate = new Date();
+	personParams.id = 1002;
+	client.insert('insertPerson', personParams);
+	
+}
+testInsert_SqlMapClient.proxy = true;
+
+//
+// update
+//
+function testUpdate_SqlMapClient() {
+
+	var client = new JBati.Server.SqlMapClientBuilder.buildSqlMapClient(
+			JBati.tsmClient.sqlMapConfigUrl);
+	
+	var personParams = {
+		id: 678, 
+		firstName: 'Fred',
+		lastName: 'Thompson',
+		birthDate: new Date(1975, 2, 13),
+		weightInKilograms: 82.45,
+		heightInMeters: 1.88
+	};
+	
+	client.update('updatePerson', personParams);
+	var row = Jaxer.DB.execute('select * from jbati_test_person where per_id = ?', 678).rows[0];
+	assertEquals(row.per_id, personParams.id, 'Did not match personParams.id');
+	assertEquals(row.per_first_name, personParams.firstName, 'Did not match personParams.firstName');
+	assertEquals(row.per_last_name, personParams.lastName, 'Did not match personParams.lastName');
+	assertEquals(row.per_birth_date, personParams.birthDate, 'Did not match personParams.birthDate');
+	assertEquals(row.per_weight_kg, personParams.weightInKilograms, 'Did not match personParams.weightInKilograms');
+	assertEquals(row.per_height_m, personParams.heightInMeters, 'Did not match personParams.heightInMeters');
+
+}
+testUpdate_SqlMapClient.proxy = true;
+
+// 
+// remove
+//
+function testRemove_SqlMapClient() {
+
+	var client = new JBati.Server.SqlMapClientBuilder.buildSqlMapClient(
+			JBati.tsmClient.sqlMapConfigUrl);
+
+	client.remove('deletePerson', {id: 678});
+	
+	var rs = Jaxer.DB.execute('select * from jbati_test_person where per_id = ?',678);
+	assertTrue(!rs.hasData, 'Removed person should not be found');
+}
+testRemove_SqlMapClient.proxy = true;
+
+function testQueryForList_SqlMapClient() {
+
+	var client = new JBati.Server.SqlMapClientBuilder.buildSqlMapClient(
+			JBati.tsmClient.sqlMapConfigUrl);
+
+	var objectList = client.queryForList('getSeveralPerson', {low_id: 10, high_id: 1000});
+	
+	assertEquals(objectList.length, 4, 'Wrong number of objects');
+	objectList.forEach(function(actual) {
+		var expected = client.queryForObject('getPerson', actual.id);
+		assertEquals(actual, expected, 'Objects are not the same');
+	});
+	
+	
+}
+testQueryForList_SqlMapClient.proxy = true;
 
 (function () {
 	JBati.Test.SqlMapClient = [
-		testQueryForObject_SqlMapClient.name
+		testQueryForObject_SqlMapClient.name,
+		testQueryForList_SqlMapClient.name,
+		testInsert_SqlMapClient.name,
+		testUpdate_SqlMapClient.name,
+		testRemove_SqlMapClient.name
 	];
 	JBati.Server.log.info('Loaded JBati.Test.SqlMapClient: ' +
 		JBati.Test.SqlMapClient);

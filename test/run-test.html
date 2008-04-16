@@ -31,13 +31,14 @@
 				var allTests = getTestCases(); 
 
 				for (var g in allTests) {
-					$('test-results').innerHTML += 
+					$('test-results').innerHTML +=  
 						'<span class="test-group" id="' + g + '">' + g + '</span><br/>';
 					for (var i in allTests[g]) {
 						var t = allTests[g][i];
 						$('test-results').innerHTML += 
 							'<span class="not-tested" id="' + t + '">' + t.split('_')[0] + '</span><br/>';
 					}
+					$('test-results').innerHTML += '<br/>';
 				}
 				
 				for (var group in allTests) {
@@ -67,41 +68,6 @@
 				}
 			}
 			
-		</script>
-
-		<!-- utilities for test cases -->
-		<script runat="server">
-
-			function assertTrue(val, msg) {
-				if(!val) throw new Error(msg);
-			}
-			
-			function assertEquals(actual, expected, msg) {
-				var equal = true;
-				if(typeof actual == 'object') {
-					for(var i in actual) {
-						if(actual[i] != expected[i]) {
-							equal = false;
-							break;
-						}
-					}
-				} else {
-					if(actual != expected) {
-						equal = false;
-					}
-				}
-				if(!equal) {
-					throw new Error(msg  + ', found: ' + actual + ', expected: ' + expected);
-				}
-			}
-			
-			function fail(msg) {
-				throw new Error(msg);
-			}
-			
-			function log(msg) {
-				//$('log').innerHTML += msg + '<br/>';
-			}
 		</script>
 
 		<!-- the test cases -->

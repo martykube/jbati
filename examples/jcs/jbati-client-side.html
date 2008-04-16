@@ -115,7 +115,7 @@
 			}
 		
 			function doReadPerson() {
-				var p = Examples.sqlMapClient.queryForObject('getPerson', 1);
+				var p = Examples.sqlMapClient.queryFor('getPerson', 1);
 				tableFromObject('read-table', p);
 				$('read-msg').innerHTML += ' - done';
 			}
