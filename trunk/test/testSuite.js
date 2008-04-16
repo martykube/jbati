@@ -8,9 +8,10 @@
 	if(typeof JBati == 'undefined') {JBati = {};}
 	JBati.Test = {};
 		
-	Jaxer.load('testParameterMapper.js');
-	Jaxer.load('testSqlMapClientBuilder.js');
-	Jaxer.load('testSqlMapConfig.js');
+//	Jaxer.load('testParameterMapper.js');
+	Jaxer.load('testSqlMapClient.js');
+//	Jaxer.load('testSqlMapConfig.js');
+//	Jaxer.load('testSqlMapClientBuilder.js');
 
 })();
 
