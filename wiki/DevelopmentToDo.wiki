@@ -18,5 +18,7 @@ This is a working document which list development activities which could be done
    # build out user API
    # accept list of scalar parameters for binding
    # queryForList - skip and limit parameters
+  # !SqlMapConfig
+   # support multiple DB connections
  # deployment
   # make some sort of autoload for client vs. server, and generate required oncallback()'s
