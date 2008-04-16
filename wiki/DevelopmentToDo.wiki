@@ -1,0 +1,20 @@
+#summary An unordered list of things to implement.
+
+This is a working document which list development activities which could be done.
+
+ # release/packaging
+  # template in version/revision numbers into source and documentation
+  # compress js files
+  # convert wiki documentation to HTML and package
+  # scripts for cutting release
+ # documentation
+  # get version number API docs
+  # relate menus to files
+  # finish developers guide
+ # code
+  # SqlMapClient
+   # build out user API
+   # accept list of scalar parameters for binding
+   # queryForList - skip and limit parameters
+ # deployment
+  # make some sort of autoload for client vs. server, and generate required oncallback()'s
