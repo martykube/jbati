@@ -1,6 +1,8 @@
 #summary Roadmap for jBati V1.0 Development.
 #labels Phase-Requirements
 
+Last update: 20080408
+
 == Introduction ==
 
 The jBati feature set is closely modeled on [http://ibatis.apache.org iBATIS].  Therefore, this road map was developed by looking at iBATIS features and deciding what to include.  
