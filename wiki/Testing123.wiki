@@ -1,0 +1,54 @@
+#summary One-sentence summary of this page.
+
+
+
+== This is a test ==
+
+[[BR]][[BR]]
+
+Some sort of introduction goes here.
+
+[[BR]][[BR]]
+
+I also want '''bold''' and ''italic'' words.
+
+[[BR]][[BR]]
+
+A table would be nice
+
+[[BR]][[BR]]
+
+|| '''Header''' || '''Header''' ||
+|| Contents || More Contents ||
+
+[[BR]][[BR]]
+
+[[BR]][[BR]]
+
+And a code sample:
+
+[[BR]][[BR]]
+
+(function() {
+
+if(typeof JBati == 'undefined') { JBati = {};}
+
+[[BR]][[BR]]
+
+// namespace: JBati.Client
+
+// The jBati client side (browser) implementation.
+
+//
+
+JBati.Client = {};
+
+[[BR]][[BR]]
+
+An drop back into normal text.
+
+[[BR]][[BR]]
+
+[[BR]][[BR]]
+
+[[BR]][[BR]]
