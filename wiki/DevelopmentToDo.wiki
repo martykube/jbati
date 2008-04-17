@@ -20,5 +20,6 @@ This is a working document which list development activities which could be done
    # queryForList - skip and limit parameters
   # !SqlMapConfig
    # support multiple DB connections
+  # support for SqlLite
  # deployment
   # make some sort of autoload for client vs. server, and generate required oncallback()'s
