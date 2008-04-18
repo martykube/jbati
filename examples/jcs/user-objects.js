@@ -1,5 +1,5 @@
 //
-// User domain object
+// User domain objects
 //
 (function () {
 

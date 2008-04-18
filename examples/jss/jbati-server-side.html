@@ -7,30 +7,17 @@
 			-->
 		
 		<!-- load jBati server side framework -->
-		<script src="../../lib/jbati-server.js" runat="server"></script>
+		<script src="../../lib/jbati-server.js" runat="server" autoload="true"></script>
 
 		<!-- Domain objects, expose on client and server -->
-		<script src="user-objects.js" runat="both"></script>
-		
-		<!-- Domain objects ORM mapping, needed only on server -->
-		<script src="user-object-maps.js" runat="server"></script>
+		<script src="../jcs/user-objects.js" runat="both" autoload="true"></script>
+
+         
+    <!-- Domain objects ORM mapping, needed only on server -->
+    <script src="../jcs/user-object-maps.js" runat="server" autoload="true"></script>
 
 		<!-- User data acess API, proxied by Jaxer -->
-		<script src="user-proxy-api.js" runat="server-proxy"></script>
-
-		<!-- Jaxer callback vodoo -->		
-		<script runat="server">
-  		function oncallback() {
-				if(typeof JBati == 'undefined') {
-					Jaxer.load('../../lib/jbati-server.js');
-				}
-				if(typeof Examples == 'undefined') {
-					Jaxer.load('user-objects.js');
-					Jaxer.load('user-object-maps.js');
-					Jaxer.load('user-proxy-api.js');
-				}
-			}
-		</script>
+		<script src="user-proxy-api.js" runat="server-proxy" autoload="true"></script>
 
 		<!-- User Application code -->
 		<script type="text/javascript" src="/prototype.js"></script>
