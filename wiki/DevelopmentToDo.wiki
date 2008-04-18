@@ -21,5 +21,6 @@ This is a working document which list development activities which could be done
   # !SqlMapConfig
    # support multiple DB connections
   # support for SqlLite
+ # conrner that mysql date bug
  # deployment
   # make some sort of autoload for client vs. server, and generate required oncallback()'s
