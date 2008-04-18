@@ -1,14 +1,14 @@
 //
-// User sqlMap
+// Load the SqlMapConfig file
 //
-
 (function () {
 
-	var path = Jaxer.Dir.resolvePath('../jss/sqlMapConfig.xml');
+	var path = Jaxer.Dir.resolvePath('../jcs/sqlMapConfig.xml');
 	var url = Jaxer.Dir.pathToUrl(path);
 	JBati.Server.SqlMapClientBuilder.buildSqlMapClient(url, 'ExamplesJSS');
-
+ 
 })();
+
 
 /* DDL for person
 create table if not exists person (  
@@ -20,3 +20,4 @@ create table if not exists person (
 	per_height_m		decimal(5,2),  
 	constraint person_pk primary key(per_id));
 */
+

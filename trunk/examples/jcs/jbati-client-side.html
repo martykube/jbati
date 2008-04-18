@@ -1,239 +1,226 @@
 <html>
-	<head>
-		<title>jBati Examples - jBati Client Side</title>
+  <head>
+    <title>jBati Examples - jBati Client Side</title>
 
-		<!--
-			-- An example of jBati client side usage
-			-->
-		
-		<!-- load jBati server side framework -->
-		<script src="../../lib/jbati-server.js" runat="server"></script>
-		
-		<!-- load jBati client side framework -->
-		<script src="../../lib/jbati-client.js"></script>
-		
-		<!-- Domain objects, expose on client and server -->
-		<script src="../jss/user-objects.js" runat="both"></script>
-		
-		<!-- Domain objects ORM mapping, needed only on server -->
-		<script src="../jss/user-object-maps.js" runat="server"></script>
+    <!--
+      -- An example of jBati client side usage
+      -->
+    
+    <!-- load jBati server side framework -->
+    <script src="../../lib/jbati-server.js" runat="server" autoload="true"></script>
+    
+    <!-- load jBati client side framework -->
+    <script src="../../lib/jbati-client.js"></script>
+    
+    <!-- Domain objects, expose on client and server -->
+    <script src="user-objects.js" runat="both" autoload="true"></script>
+         
+    <!-- Domain objects ORM mapping, needed only on server -->
+    <script src="user-object-maps.js" runat="server" autoload="true"></script>
 
-		<!-- Jaxer callback vodoo -->		
-		<script runat="server">
-  		function oncallback() {
-				if(typeof JBati == 'undefined') {
-					Jaxer.load('../../lib/jbati-server.js');
-				}
-				if(typeof Examples == 'undefined') {
-					Jaxer.load('../jss/user-objects.js');
-					Jaxer.load('../jss/user-object-maps.js');
-				}
-			}
-		</script>
-		
-		<!-- User Application code -->
-		<script type="text/javascript" src="/prototype.js"></script>
-		<script>
-		
-			//
-			// Utility functions for this example
-			//
-			
-			// populate an object from values in an HTML table
-			function objectFromTable(tableId, objectClass) {
-				var o = eval('new ' + objectClass + '()');
-				var propNames = $$('#' + tableId + ' th');
-				var props = $$('#' + tableId + ' td');
-				var propNum = 0;
-				propNames.each(function(item) {
-					o[item.innerHTML] = props[propNum++].innerHTML;
-				});
-				o.birthDate = dateFromStr(o.birthDate);
-				return o;
-			}
-			
-			// populate a HTML table from values in an object
-			function tableFromObject(tableId, anObject) {
-				anObject.birthDate = strFromDate(anObject.birthDate);
-				var propNames = $$('#' + tableId + ' th');
-				var props = $$('#' + tableId + ' td');
-				var propNum = 0;
-				propNames.each(function(item) {
-					props[propNum++].innerHTML = anObject[item.innerHTML];
-				});
-			}
-			
-			// convert from JS Date to string 'yyyy-mm-dd'
-			function dateFromStr(dateStr) {
-				if(dateStr) {
-					var dateParts = dateStr.split('-');
-					var date = new Date();
-					date.setFullYear(dateParts[0]);
-					date.setMonth(dateParts[1] - 1);
-					date.setDate(dateParts[2]);
-				}
-				return date;
-			}
-			
-			// convert from string 'yyyy-mm-dd' to JS Date
-			function strFromDate(aDate) {
-				var str = '';
-				if(aDate) {
-					str += 
-					aDate.getFullYear() + 
-					(aDate.getMonth() + 1) +
-					aDate.getDate();
-				}
-				return str;
-			}
-			
-			function resetMsgs() {
-				$('delete-msg').innerHTML = '';
-				$('create-msg').innerHTML = '';
-				$('read-msg').innerHTML   = '';
-				$('update-msg').innerHTML = '';
-			}
-		
-			// 
-			// Blocking server callbacks
-			//
+    <!-- User Application code -->
+    <script type="text/javascript" src="/prototype.js"></script>
+    <script>
+    
+      //
+      // Utility functions for this example
+      //
+      
+      // populate an object from values in an HTML table
+      function objectFromTable(tableId, objectClass) {
+        var o = eval('new ' + objectClass + '()');
+        var propNames = $$('#' + tableId + ' th');
+        var props = $$('#' + tableId + ' td');
+        var propNum = 0;
+        propNames.each(function(item) {
+          o[item.innerHTML] = props[propNum++].innerHTML;
+        });
+        o.birthDate = dateFromStr(o.birthDate);
+        return o;
+      }
+      
+      // populate a HTML table from values in an object
+      function tableFromObject(tableId, anObject) {
+        anObject.birthDate = strFromDate(anObject.birthDate);
+        var propNames = $$('#' + tableId + ' th');
+        var props = $$('#' + tableId + ' td');
+        var propNum = 0;
+        propNames.each(function(item) {
+          props[propNum++].innerHTML = anObject[item.innerHTML];
+        });
+      }
+      
+      // convert from JS Date to string 'yyyy-mm-dd'
+      function dateFromStr(dateStr) {
+        if(dateStr) {
+          var dateParts = dateStr.split('-');
+          var date = new Date();
+          date.setFullYear(dateParts[0]);
+          date.setMonth(dateParts[1] - 1);
+          date.setDate(dateParts[2]);
+        }
+        return date;
+      }
+      
+      // convert from string 'yyyy-mm-dd' to JS Date
+      function strFromDate(aDate) {
+        var str = '';
+        if(aDate) {
+          str += 
+          aDate.getFullYear() + 
+          (aDate.getMonth() + 1) +
+          aDate.getDate();
+        }
+        return str;
+      }
+      
+      function resetMsgs() {
+        $('delete-msg').innerHTML = '';
+        $('create-msg').innerHTML = '';
+        $('read-msg').innerHTML   = '';
+        $('update-msg').innerHTML = '';
+      }
+    
+      // 
+      // Blocking server callbacks
+      //
 
-			(function() {
-				if(typeof Examples == 'undefined') {Examples = {};}
-				Examples.sqlMapClient = new JBati.Client.SqlMapClient('ExamplesJSS');
-			})();
+      (function() {
+        if(typeof Examples == 'undefined') {Examples = {};}
+        Examples.sqlMapClient = new JBati.Client.SqlMapClient('ExamplesJSS');
+      })();
 
-			function doDeletePerson(client) {
-				Examples.sqlMapClient.remove('deletePerson', 1);
-				$('delete-msg').innerHTML += ' - done';
-			}
+      function doDeletePerson(client) {
+        Examples.sqlMapClient.remove('deletePerson', 1);
+        $('delete-msg').innerHTML += ' - done';
+      }
 
-			function doCreatePerson() {
-				var p = objectFromTable('create-table', 'Examples.Domain.Person');
-				Examples.sqlMapClient.insert('insertPerson', p);
-				$('create-msg').innerHTML += ' - done';
-			}
-		
-			function doReadPerson() {
-				var p = Examples.sqlMapClient.queryFor('getPerson', 1);
-				tableFromObject('read-table', p);
-				$('read-msg').innerHTML += ' - done';
-			}
-			
-			function doUpdatePerson() {
-				var p = objectFromTable('update-table', 'Examples.Domain.Person');
-				Examples.sqlMapClient.update('updatePerson', p);
-				$('update-msg').innerHTML += ' - done';
-			}
+      function doCreatePerson() {
+        var p = objectFromTable('create-table', 'Examples.Domain.Person');
+        Examples.sqlMapClient.insert('insertPerson', p);
+        $('create-msg').innerHTML += ' - done';
+      }
+    
+      function doReadPerson() {
+        var p = Examples.sqlMapClient.queryForObject('getPerson', 1);
+        tableFromObject('read-table', p);
+        $('read-msg').innerHTML += ' - done';
+      }
+      
+      function doUpdatePerson() {
+        var p = objectFromTable('update-table', 'Examples.Domain.Person');
+        Examples.sqlMapClient.update('updatePerson', p);
+        $('update-msg').innerHTML += ' - done';
+      }
 
-			function runExample() {
-				resetMsgs();
-				doDeletePerson();
-				doCreatePerson();
-				doReadPerson();
-				doUpdatePerson();
-			}
-		
-			//
-			// Async server callbacks
-			//
-			
-			function updatePersonCallback() {
-				$('update-msg').innerHTML += ' - done';
-			}
-			
-			function readPersonCallBack(p) {
-				tableFromObject('read-table', p);
-				$('read-msg').innerHTML += ' - done';
-				// fire off update
-				var p = objectFromTable('update-table', 'Examples.Domain.Person');
-				Examples.sqlMapClient.updateAsync(updatePersonCallback, 'updatePerson', p);
-			}
-			
-			function createPersonCallback() {
-				$('create-msg').innerHTML += ' - done';
-				// fire off read
-				Examples.sqlMapClient.queryForObjectAsync(readPersonCallBack, 'getPerson', 1);
-			}
+      function runExample() {
+        resetMsgs();
+        doDeletePerson();
+        doCreatePerson();
+        doReadPerson();
+        doUpdatePerson();
+      }
+    
+      //
+      // Async server callbacks
+      //
+      
+      function updatePersonCallback() {
+        $('update-msg').innerHTML += ' - done';
+      }
+      
+      function readPersonCallBack(p) {
+        tableFromObject('read-table', p);
+        $('read-msg').innerHTML += ' - done';
+        // fire off update
+        var p = objectFromTable('update-table', 'Examples.Domain.Person');
+        Examples.sqlMapClient.updateAsync(updatePersonCallback, 'updatePerson', p);
+      }
+      
+      function createPersonCallback() {
+        $('create-msg').innerHTML += ' - done';
+        // fire off read
+        Examples.sqlMapClient.queryForObjectAsync(readPersonCallBack, 'getPerson', 1);
+      }
 
-			function deletePersonCallback() {
-				$('delete-msg').innerHTML += ' - done';
-				// fire off create
-				var p = objectFromTable('create-table', 'Examples.Domain.Person');
-				Examples.sqlMapClient.insertAsync(createPersonCallback,'insertPerson', p);
-			}
-			
-			function runExampleAsync() {
-				resetMsgs();
-				Examples.sqlMapClient.removeAsync(deletePersonCallback, 'deletePerson', 1);
-			}
+      function deletePersonCallback() {
+        $('delete-msg').innerHTML += ' - done';
+        // fire off create
+        var p = objectFromTable('create-table', 'Examples.Domain.Person');
+        Examples.sqlMapClient.insertAsync(createPersonCallback,'insertPerson', p);
+      }
+      
+      function runExampleAsync() {
+        resetMsgs();
+        Examples.sqlMapClient.removeAsync(deletePersonCallback, 'deletePerson', 1);
+      }
 
-		</script>
-	</head>
-	<body>
-		<h2>Delete person with id = 1<span id='delete-msg'></span></h2>
-		<hr/>		
-		<h2>Create a person from this table<span id='create-msg'></span></h2>		
-		<table border="1" style="text-align: center" id="create-table">
-			<tr>
-				<th>id</th>
-				<th>firstName</th>
-				<th>lastName</th>
-				<th>birthDate</th>
-				<th>weightInKilograms</th>
-				<th>heightInMeters</th>
-			</tr>
-			<tr>
-				<td>1</td>
-				<td>John</td>
-				<td>Doe</td>
-				<td>1975-11-20</td>
-				<td>90.7</td>
-				<td>1.82</td>
-			</tr>
-		</table>
-		<hr/>
-		<h2>Read a person and populate this table<span id='read-msg'></span></h2>		
-		<table border="1" style="text-align: center" id="read-table">
-			<tr>
-				<th>id</th>
-				<th>firstName</th>
-				<th>lastName</th>
-				<th>birthDate</th>
-				<th>weightInKilograms</th>
-				<th>heightInMeters</th>
-			</tr>
-			<tr>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-			</tr>
-		</table>
-		<hr/>
-		<h2>Update a person from this table<span id='update-msg'></span></h2>		
-		<table border="1" style="text-align: center" id="update-table">
-			<tr>
-				<th>id</th>
-				<th>firstName</th>
-				<th>lastName</th>
-				<th>birthDate</th>
-				<th>weightInKilograms</th>
-				<th>heightInMeters</th>
-			</tr>
-			<tr>
-				<td>1</td>
-				<td>Jane</td>
-				<td>Smith</td>
-				<td>1978-1-1</td>
-				<td>89.2</td>
-				<td>1.76</td>
-			</tr>
-		</table>
-		<hr/>
-		<button onclick="runExample();">Run</button>
-		<button onclick="runExampleAsync();">Run Async</button>
+    </script>
+  </head>
+  <body>
+    <h2>Delete person with id = 1<span id='delete-msg'></span></h2>
+    <hr/>   
+    <h2>Create a person from this table<span id='create-msg'></span></h2>   
+    <table border="1" style="text-align: center" id="create-table">
+      <tr>
+        <th>id</th>
+        <th>firstName</th>
+        <th>lastName</th>
+        <th>birthDate</th>
+        <th>weightInKilograms</th>
+        <th>heightInMeters</th>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>John</td>
+        <td>Doe</td>
+        <td>1975-11-20</td>
+        <td>90.7</td>
+        <td>1.82</td>
+      </tr>
+    </table>
+    <hr/>
+    <h2>Read a person and populate this table<span id='read-msg'></span></h2>   
+    <table border="1" style="text-align: center" id="read-table">
+      <tr>
+        <th>id</th>
+        <th>firstName</th>
+        <th>lastName</th>
+        <th>birthDate</th>
+        <th>weightInKilograms</th>
+        <th>heightInMeters</th>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+    </table>
+    <hr/>
+    <h2>Update a person from this table<span id='update-msg'></span></h2>   
+    <table border="1" style="text-align: center" id="update-table">
+      <tr>
+        <th>id</th>
+        <th>firstName</th>
+        <th>lastName</th>
+        <th>birthDate</th>
+        <th>weightInKilograms</th>
+        <th>heightInMeters</th>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>Jane</td>
+        <td>Smith</td>
+        <td>1978-1-1</td>
+        <td>89.2</td>
+        <td>1.76</td>
+      </tr>
+    </table>
+    <hr/>
+    <button onclick="runExample();">Run</button>
+    <button onclick="runExampleAsync();">Run Async</button>
 </html>
-		
+    
