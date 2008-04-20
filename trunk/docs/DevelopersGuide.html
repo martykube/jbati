@@ -7,17 +7,18 @@
 	<META NAME="AUTHOR" CONTENT="Marty Kube">
 	<META NAME="CREATED" CONTENT="20080417;17354503">
 	<META NAME="CHANGEDBY" CONTENT="Marty Kube">
-	<META NAME="CHANGED" CONTENT="20080418;16135196">
+	<META NAME="CHANGED" CONTENT="20080420;18513473">
+	<META NAME="CHANGEDBY" CONTENT="Marty Kube">
 	<META NAME="CHANGEDBY" CONTENT="Marty Kube">
 	<STYLE TYPE="text/css">
 	<!--
 		@page { size: 8.5in 11in; margin: 0.79in }
-		P { margin-bottom: 0.08in }
 		TD P { margin-bottom: 0.08in }
 		H1 { margin-bottom: 0.08in }
 		H1.western { font-family: "Times New Roman", serif }
 		H1.cjk { font-family: "Arial Unicode MS" }
 		H1.ctl { font-family: "Tahoma" }
+		P { margin-bottom: 0.08in }
 		H2 { margin-bottom: 0.08in }
 		H2.western { font-family: "Albany", sans-serif; font-size: 14pt; font-style: italic }
 		H2.cjk { font-family: "HG Mincho Light J"; font-size: 14pt; font-style: italic }
@@ -26,7 +27,8 @@
 	</STYLE>
 </HEAD>
 <BODY LANG="en-US" DIR="LTR">
-<H1 CLASS="western"><FONT FACE="Arial, sans-serif">jBati Developers Guide </FONT>
+<H1 CLASS="western"><FONT FACE="Arial, sans-serif">jBati Developers
+Guide </FONT>
 </H1>
 <P><FONT FACE="Arial, sans-serif"><FONT SIZE=4><B>Version 0.1</B></FONT></FONT></P>
 <P><FONT FACE="Arial, sans-serif"><FONT SIZE=4><B>2008-04-17</B></FONT></FONT></P>
@@ -143,8 +145,8 @@ finally the Person is deleted from the database. The CRUD cycle can
 be executed in a sequential fashion, or, with asynchronous calls to
 the server. Here is a screen shot of jbati-client-side.html in
 action:</FONT></P>
-<P>
-<img src="img/jbati-client-side.html.png" atl="jBati screen shot"/>
+<P><IMG SRC="img/jbati-client-side.html.png" NAME="graphics1" ALIGN=BOTTOM WIDTH=454 HEIGHT=466 BORDER=0>
+</P>
 <P><FONT FACE="Arial, sans-serif">The top portion of
 jbati-client-side.html shows the pieces that are need:</FONT></P>
 <P><BR><BR>
@@ -167,8 +169,7 @@ jbati-client-side.html shows the pieces that are need:</FONT></P>
 016     &lt;script src=&quot;user-objects.js&quot; runat=&quot;both&quot; autoload=&quot;true&quot;&gt;&lt;/script&gt;
 017     
 018     &lt;!-- Domain objects ORM mapping, needed only on server --&gt;
-019     &lt;script src=&quot;user-object-maps.js&quot; runat=&quot;server&quot; autoload=&quot;true&quot;&gt;&lt;/script&gt;
-</PRE><P>
+019     &lt;script src=&quot;user-object-maps.js&quot; runat=&quot;server&quot; autoload=&quot;true&quot;&gt;&lt;/script&gt;</PRE><P>
 <FONT FACE="Arial, sans-serif">On line 10, the server side of the
 jBati framework is imported into the server execution context. The
 Jaxer attributes are important here; both runat=&rdquo;server&rdquo;
@@ -200,8 +201,7 @@ autoload=&rdquo;true&rdquo;. Here's a listing of user-objects.js:</FONT></P>
 011     Examples.Domain.Person = function () {};
 012 
 013  
-014 })();
-</PRE><P>
+014 })();</PRE><P>
 <FONT FACE="Arial, sans-serif">Person is a pretty lightweight domain
 object. In fact, if you find yourself declaring this type of object,
 you can just use the JavaScript Object class in your object mapping.
@@ -223,8 +223,7 @@ line 19 user-object-maps.js is loaded. Here's a listing:</FONT></P>
 007     var url = Jaxer.Dir.pathToUrl(path);
 008     JBati.Server.SqlMapClientBuilder.buildSqlMapClient(url, 'ExamplesJSS');
 009  
-010 })();
-</PRE><P>
+010 })();</PRE><P>
 <FONT FACE="Arial, sans-serif">Loading the object mapping
 configuration is a server side only operation as you likely don't
 want to expose this information on the Internet. Therefore, the
@@ -249,8 +248,7 @@ configuration files. The first file contains a sqlMapConfig document:</FONT></P>
 005 
 006 &lt;sqlMapConfig&gt;
 007     &lt;sqlMap resource=&quot;person.xml&quot;/&gt;
-008 &lt;/sqlMapConfig&gt;
-</PRE><P>
+008 &lt;/sqlMapConfig&gt;</PRE><P>
 <FONT FACE="Arial, sans-serif">This file is pretty light weight in
 the current version. The only interesting part is loading a sqlMap
 XML file named person.xml. The resource attribute is a path relative
@@ -313,8 +311,7 @@ and object mapping:</FONT></P>
 050             WHERE PER_ID = #id#
 051     &lt;/delete&gt;
 052 
-053 &lt;/sqlMap&gt;
-</PRE><P>
+053 &lt;/sqlMap&gt;</PRE><P>
 <FONT FACE="Arial, sans-serif">This file is a pretty direct copy from
 the iBATIS tutorials. This is noted here, not just to give the due
 credit, but to also point out a fundamental design decision. The
@@ -325,12 +322,10 @@ aim is to allow validation of the XML and support similar semantics.</FONT></P>
 so let's look at some code to see how the sqlMap is used. The select
 statement on lines 8-20 is executed with the following code. First, a
 jBati client is fetched:</FONT></P>
-<PRE>        var client = new Jbati.Client.SqlMapClient('ExamplesJSS');
-</PRE><P>
+<PRE STYLE="margin-bottom: 0.2in">        var client = new Jbati.Client.SqlMapClient('ExamplesJSS');</PRE><P>
 <FONT FACE="Arial, sans-serif">Then, a single Person object is
 fetched:</FONT></P>
-<PRE>        var p = client.queryForObject('getPerson', 1);
-</PRE><P>
+<PRE STYLE="margin-bottom: 0.2in">        var p = client.queryForObject('getPerson', 1);</PRE><P>
 <FONT FACE="Arial, sans-serif">The parameter 'getPerson' is the id
 attribute of the XML select element and is used to identify which SQL
 statement is to be executed. The SQL has replacement tokens such as
@@ -353,12 +348,10 @@ p.firstName = 'Bob',
 p.lastName ='Jones',
 p.birthDate = new Date(1975, 2, 13),
 p.weightInKilograms = 82.45,
-p.heightInMeters = 1.88
-</PRE><P>
+p.heightInMeters = 1.88</PRE><P>
 <FONT FACE="Arial, sans-serif">This object can be used to fill in the
 values for the updatePerson SQL statement:</FONT></P>
-<PRE>client.update('updatePerson', p);
-</PRE><P>
+<PRE STYLE="margin-bottom: 0.2in">client.update('updatePerson', p);</PRE><P>
 <FONT FACE="Arial, sans-serif">This wraps up the first example.</FONT></P>
 <P><FONT FACE="Arial, sans-serif">It is worth noting that jBati
 supports one other main usage pattern, which is jBati on the server
@@ -369,22 +362,16 @@ pattern, see examples/jss.</FONT></P>
 <P><FONT FACE="Arial, sans-serif">The next sections document the
 sqlMapConfig and sqlMap XML documents.</FONT></P>
 <H2 CLASS="western"><FONT FACE="Arial, sans-serif">SqlMapConfig</FONT></H2>
-<P><BR><BR>
-</P>
 <P><FONT FACE="Arial, sans-serif">The sqlMapConfig element is loaded
 with the call:</FONT></P>
-<PRE> Jbati.Server.SqlMapClientBuilder.buildSqlMapClient(utl).  </PRE><P>
-<BR><BR>
-</P>
-<P><FONT FACE="Arial, sans-serif">The url argument must be a file
+<PRE STYLE="margin-bottom: 0.2in"> Jbati.Server.SqlMapClientBuilder.buildSqlMapClient(utl).  </PRE><P>
+<FONT FACE="Arial, sans-serif">The url argument must be a file
 protocol URL.</FONT></P>
 <P><FONT FACE="Arial, sans-serif">The sqlMapConfig XML document
 should conform to the iBATIS sqlMapConfig DTD
 (<A HREF="http://ibatis.apache.org/dtd/sql-map-config-2.dtd">http://ibatis.apache.org/dtd/sql-map-config-2.dtd</A>).
- Many elements in the DTD are not supported and will be ignored.  The
+Many elements in the DTD are not supported and will be ignored. The
 supported elements are listed in the following table:</FONT></P>
-<P><BR><BR>
-</P>
 <TABLE WIDTH=100% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=4 CELLSPACING=0 STYLE="page-break-inside: avoid">
 	<COL WIDTH=56*>
 	<COL WIDTH=43*>
@@ -422,25 +409,22 @@ supported elements are listed in the following table:</FONT></P>
 		</TD>
 		<TD WIDTH=61%>
 			<P><FONT FACE="Arial, sans-serif">File system path to a sqlMap
-			file.  Relative paths are relative to the location of the
+			file. Relative paths are relative to the location of the
 			sqlMapConfig file.</FONT></P>
 		</TD>
 	</TR>
 </TABLE>
 <P><BR><BR>
 </P>
-<H2 CLASS="western"><FONT FACE="Arial, sans-serif">sqlMap</FONT></H2>
-<P><BR><BR>
-</P>
+<H2 CLASS="western"><FONT FACE="Arial, sans-serif">SqlMap</FONT></H2>
 <P><FONT FACE="Arial, sans-serif">Similar to the sqlMapConfig
 document, the sqlMap XML document should conform to the iBATIS sqlMap
 DTD (<A HREF="http://ibatis.apache.org/dtd/sql-map-2.dtd">http://ibatis.apache.org/dtd/sql-map-2.dtd</A>).</FONT></P>
 <P><BR><BR>
 </P>
 <P><FONT FACE="Arial, sans-serif">Many elements in the DTD are not
-supported and will be ignored.  The supported elements and attributes
+supported and will be ignored. The supported elements and attributes
 are listed in the following table:</FONT></P>
-
 <TABLE WIDTH=100% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=4 CELLSPACING=0 STYLE="page-break-inside: avoid">
 	<COL WIDTH=56*>
 	<COL WIDTH=43*>
@@ -491,7 +475,7 @@ are listed in the following table:</FONT></P>
 		</TD>
 		<TD WIDTH=61%>
 			<P><FONT FACE="Arial, sans-serif">The is by which SQL statements
-			are referred to.  All API calls that execute DML require this as a
+			are referred to. All API calls that execute DML require this as a
 			parameter.</FONT></P>
 		</TD>
 	</TR>
@@ -529,7 +513,7 @@ are listed in the following table:</FONT></P>
 		</TD>
 		<TD WIDTH=61%>
 			<P><FONT FACE="Arial, sans-serif">The is by which SQL statements
-			are referred to.  All API calls that execute DML require this as a
+			are referred to. All API calls that execute DML require this as a
 			parameter.</FONT></P>
 		</TD>
 	</TR>
@@ -555,7 +539,7 @@ are listed in the following table:</FONT></P>
 		</TD>
 		<TD WIDTH=61%>
 			<P><FONT FACE="Arial, sans-serif">The is by which SQL statements
-			are referred to.  All API calls that execute DML require this as a
+			are referred to. All API calls that execute DML require this as a
 			parameter.</FONT></P>
 		</TD>
 	</TR>
@@ -581,7 +565,7 @@ are listed in the following table:</FONT></P>
 		</TD>
 		<TD WIDTH=61%>
 			<P><FONT FACE="Arial, sans-serif">The is by which SQL statements
-			are referred to.  All API calls that execute DML require this as a
+			are referred to. All API calls that execute DML require this as a
 			parameter.</FONT></P>
 		</TD>
 	</TR>
