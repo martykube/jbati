@@ -48,7 +48,7 @@ To make good use of jBati, you'll need a database, SQL, and some !JavaScript obj
 
 The example discussed here is available in the distribution under examples/jcs. This example is a HTML page that executes a cycle of CRUD operations on a Person object. The attributes of the Person are first read from a HTML table and the Person object is inserted into the database. Then the same person is read back to populate another HTML table. Person attributes to update the in the database are read from another table, and finally the Person is deleted from the database. The CRUD cycle can be executed in a sequential fashion, or, with asynchronous calls to the server. Here is a screen shot of jbati-client-side.html in action:
 
-img/jbati-client-side.html.png
+[http://beavercreekconsulting.com/img/jbati-client-side.html.png]
 
 The top portion of jbati-client-side.html shows the pieces that are need:
 
