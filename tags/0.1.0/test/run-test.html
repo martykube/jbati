@@ -1,0 +1,81 @@
+<html>
+	<head>
+		<title>JBati Test Suite</title>
+		<style type="text/css">
+			span.not-tested {color: grey}
+			span.passed {color: black}
+			span.failed {color: red}
+			span.test-group {font-weight: bold}
+		</style>
+
+		<!--
+		
+		A little test harness. The harness will run all functions with 
+		names starting with 'test'.  The harness expects that names will match 
+		this pattern:
+		
+		test<name>_<group>()
+		
+		For now, since most functions being tested are jaxer proxies, this harness 
+		will skip the Async versions (to keep the code here simple).
+		
+		-->
+		<script>
+		  
+			function $ (id) {
+				return document.getElementById(id);
+			}
+
+			function runTest() {
+
+				var allTests = getTestCases(); 
+
+				for (var g in allTests) {
+					$('test-results').innerHTML +=  
+						'<span class="test-group" id="' + g + '">' + g + '</span><br/>';
+					for (var i in allTests[g]) {
+						var t = allTests[g][i];
+						$('test-results').innerHTML += 
+							'<span class="not-tested" id="' + t + '">' + t.split('_')[0] + '</span><br/>';
+					}
+					$('test-results').innerHTML += '<br/>';
+				}
+				
+				for (var group in allTests) {
+					for (var i in allTests[group]) {
+					
+						// setUp
+						if(typeof this['setUp_' + group] == 'function') {
+							this['setUp_' + group]();
+						}
+					
+						// run test
+						var t = allTests[group][i]
+						try {
+							eval(t + '();');
+							$(t).innerHTML += ' - passed';
+							$(t).className = 'passed';
+						} catch (e) {
+							$(t).innerHTML += ' - failed - ' + e.message;
+							$(t).className = 'failed';
+						}
+					
+						// tear down
+						if(typeof this['tearDown_' + group] == 'function') {
+							this['tearDown_' + group]();
+						}
+					}
+				}
+			}
+			
+		</script>
+
+		<!-- the test cases -->
+		<script src="../lib/jbati-server.js" runat="server" autoload="true"></script>
+		<script src="testSuite.js" runat="server-proxy" autoload="true"></script>
+		
+	</head>
+	<body onload="runTest();">
+		<div id="test-results"></div>
+	</body>
+</html>
