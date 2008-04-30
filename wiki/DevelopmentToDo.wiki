@@ -8,6 +8,7 @@ This is a working document which list development activities which could be done
   # compress js files
   # convert wiki documentation to HTML and package
   # scripts for cutting release
+  # update source for MIT license
  # documentation
   # get version number API docs
   # relate menus to files
