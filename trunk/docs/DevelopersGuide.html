@@ -6,8 +6,8 @@
 	<META NAME="GENERATOR" CONTENT="OpenOffice.org 2.4  (Win32)">
 	<META NAME="AUTHOR" CONTENT="Marty Kube">
 	<META NAME="CREATED" CONTENT="20080417;17354503">
+	<META NAME="CHANGED" CONTENT="20080430;13564147">
 	<META NAME="CHANGEDBY" CONTENT="Marty Kube">
-	<META NAME="CHANGED" CONTENT="20080420;18513473">
 	<META NAME="CHANGEDBY" CONTENT="Marty Kube">
 	<META NAME="CHANGEDBY" CONTENT="Marty Kube">
 	<STYLE TYPE="text/css">
@@ -30,8 +30,8 @@
 <H1 CLASS="western"><FONT FACE="Arial, sans-serif">jBati Developers
 Guide </FONT>
 </H1>
-<P><FONT FACE="Arial, sans-serif"><FONT SIZE=4><B>Version 0.1</B></FONT></FONT></P>
-<P><FONT FACE="Arial, sans-serif"><FONT SIZE=4><B>2008-04-17</B></FONT></FONT></P>
+<P><FONT FACE="Arial, sans-serif"><FONT SIZE=4><B>Version 0.2</B></FONT></FONT></P>
+<P><FONT FACE="Arial, sans-serif"><FONT SIZE=4><B>2008-04-30</B></FONT></FONT></P>
 <P><FONT FACE="Arial, sans-serif"><FONT SIZE=4><B>Marty Kube</B></FONT></FONT></P>
 <HR>
 <H2 CLASS="western"><A NAME="Introduction"></A><FONT FACE="Arial, sans-serif">Introduction</FONT></H2>
@@ -129,8 +129,9 @@ features.</FONT></P>
 need a database, SQL, and some JavaScript objects that you want to
 put together in a useful manner. You'll have to write the
 configuration files which contain the SQL and the mapping to
-JavaScript objects/attributes. Then, you'll include the jBati library
-in you application code and use the API to fetch and persist
+JavaScript objects/attributes</FONT></P>
+<P><FONT FACE="Arial, sans-serif">. Then, you'll include the jBati
+library in you application code and use the API to fetch and persist
 JavaScript objects in your database. To make this clear, we'll start
 with an example and then follow up with reference information.</FONT></P>
 <H2 CLASS="western"><FONT FACE="Arial, sans-serif">Example</FONT></H2>
@@ -145,7 +146,9 @@ finally the Person is deleted from the database. The CRUD cycle can
 be executed in a sequential fashion, or, with asynchronous calls to
 the server. Here is a screen shot of jbati-client-side.html in
 action:</FONT></P>
-<P><IMG SRC="img/jbati-client-side.html.png" NAME="graphics1" ALIGN=BOTTOM WIDTH=454 HEIGHT=466 BORDER=0>
+<P><IMG SRC="img/jbati-client-side.html.png" NAME="graphics1" ALIGN=LEFT WIDTH=454 HEIGHT=466 BORDER=0><BR CLEAR=LEFT><BR><BR>
+</P>
+<P><BR><BR>
 </P>
 <P><FONT FACE="Arial, sans-serif">The top portion of
 jbati-client-side.html shows the pieces that are need:</FONT></P>
@@ -172,8 +175,8 @@ jbati-client-side.html shows the pieces that are need:</FONT></P>
 019     &lt;script src=&quot;user-object-maps.js&quot; runat=&quot;server&quot; autoload=&quot;true&quot;&gt;&lt;/script&gt;</PRE><P>
 <FONT FACE="Arial, sans-serif">On line 10, the server side of the
 jBati framework is imported into the server execution context. The
-Jaxer attributes are important here; both runat=&rdquo;server&rdquo;
-and autoload=&rdquo;true&rdquo; are necessary. Likewise, the client
+Jaxer attributes are important here; both runat=&quot;server&quot;
+and autoload=&quot;true&quot; are necessary. Likewise, the client
 side of the jBati framework, which runs in the browser, is loaded on
 line 13.</FONT></P>
 <P><FONT FACE="Arial, sans-serif">You'll need to supply equivalent
@@ -186,8 +189,8 @@ objects. </FONT>
 available on the client, where you'll use them, and on the server
 side, where jBati will take care of persistence operations. On line
 16, the domain objects are imported into both the client and server
-context with the script attributes of runat=&rdquo;both&rdquo; and
-autoload=&rdquo;true&rdquo;. Here's a listing of user-objects.js:</FONT></P>
+context with the script attributes of runat=&quot;both&quot; and
+autoload=&quot;true&quot;. Here's a listing of user-objects.js:</FONT></P>
 <PRE>001 //
 002 // User domain objects
 003 //
@@ -208,9 +211,9 @@ you can just use the JavaScript Object class in your object mapping.
 In any case, here, the domain objects are kept in a namespace object
 (Examples). Executing this code is need during server callbacks to
 populate the global variable Examples and thus the script attribute
-autoload=&rdquo;true&rdquo; is required for this example. On the
-other hand, if you're not using a namespace, the autoload attribute
-is not needed.</FONT></P>
+autoload=&quot;true&quot; is required for this example. On the other
+hand, if you're not using a namespace, the autoload attribute is not
+needed.</FONT></P>
 <P><FONT FACE="Arial, sans-serif">The next bit of scripting you need
 to provide tells jBati to load your SQL and object mapping files. On
 line 19 user-object-maps.js is loaded. Here's a listing:</FONT></P>
@@ -227,11 +230,11 @@ line 19 user-object-maps.js is loaded. Here's a listing:</FONT></P>
 <FONT FACE="Arial, sans-serif">Loading the object mapping
 configuration is a server side only operation as you likely don't
 want to expose this information on the Internet. Therefore, the
-including script tag is run=&rdquo;server&rdquo;. The path to the
-file on line 6 is a file system path, relative in this case, which
-gets resolved to a <A HREF="//.">file://</A> protocol URL on line 7.
-Line 8 invokes the jBati call to parse the configuration file and
-build a jBati client.</FONT></P>
+including script tag is run=&quot;server&quot;. The path to the file
+on line 6 is a file system path, relative in this case, which gets
+resolved to a <A HREF="//.">file://</A> protocol URL on line 7. Line
+8 invokes the jBati call to parse the configuration file and build a
+jBati client.</FONT></P>
 <P><FONT FACE="Arial, sans-serif">In this example, the jBati client
 is used on the browser side. The second parameter to
 buildSqlMapClient(), 'ExampleJSS', names the client for later
@@ -364,7 +367,7 @@ sqlMapConfig and sqlMap XML documents.</FONT></P>
 <H2 CLASS="western"><FONT FACE="Arial, sans-serif">SqlMapConfig</FONT></H2>
 <P><FONT FACE="Arial, sans-serif">The sqlMapConfig element is loaded
 with the call:</FONT></P>
-<PRE STYLE="margin-bottom: 0.2in"> Jbati.Server.SqlMapClientBuilder.buildSqlMapClient(utl).  </PRE><P>
+<PRE STYLE="margin-bottom: 0.2in">Jbati.Server.SqlMapClientBuilder.buildSqlMapClient(utl).  </PRE><P>
 <FONT FACE="Arial, sans-serif">The url argument must be a file
 protocol URL.</FONT></P>
 <P><FONT FACE="Arial, sans-serif">The sqlMapConfig XML document
