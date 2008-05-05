@@ -11,7 +11,7 @@ use URI;
 
 =head1 NAME
 
-HTML::WikiConverter::GoogleCode - Convert HTML to GoogleCode markup
+HTML::WikiConverter::GoogleCode - Convert HTML to GoogleCode wiki markup
 
 =head1 SYNOPSIS
 
@@ -88,6 +88,11 @@ constructor. See L<HTML::WikiConverter/ATTRIBUTES> for usage details.
 
 Possible values: C<0>, C<1>. Enables C<[[Anchor(s)]]> formatting. See
 L<http://moinmoin.wikiwikiweb.de/HelpOnMacros> for details.
+
+=head2 escape_autolink
+
+A reference to an array of CamelCase words for which Google 
+autolink-ing should be escaped by preceesding the word with !.
 
 =cut
 
@@ -196,15 +201,12 @@ sub preprocess_node {
 
 sub preprocess_tree {
 	my ($self, $root) = @_;
-	$self->_preprocessing_walk($root);
+	$self->_escape_autolink($root);
 }
 
-# implement escaping of auto-link for CamelCase words - Done
-# fix up image urls
-# try to handle &qrdot; from OO
-# add empty table elements
-# summary and description on top of page (in post processing)
-sub _preprocessing_walk {
+# escape google autolinking of specific camel case words
+# works in attribute escape_autolink
+sub _escape_autolink {
 	my ($self, $parent) = @_;
   foreach my $child ($parent->content_list) {
   	if($child->tag eq '~text') {
@@ -223,7 +225,7 @@ sub _preprocessing_walk {
   		$child->attr('text', $theText);
   	} else {
   		unless($child->tag eq 'pre') {
- 				$self->_preprocessing_walk($child);
+ 				$self->_escape_autolink($child);
  			}
   	}
   }
@@ -246,6 +248,7 @@ sub postprocess_output {
 =head1 AUTHOR
 
 David J. Iberri, C<< <diberri at cpan.org> >>
+Marty Kube C<< <martykube at cpan.org> >>
 
 =head1 BUGS
 
@@ -260,7 +263,7 @@ progress on your bug as I make changes.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc HTML::WikiConverter::MoinMoin
+    perldoc HTML::WikiConverter::GoogleCode
 
 You can also look for information at:
 
@@ -287,6 +290,7 @@ L<http://search.cpan.org/dist/HTML-WikiConverter-MoinMoin>
 =head1 COPYRIGHT & LICENSE
 
 Copyright 2006 David J. Iberri, all rights reserved.
+Copyright 2008 Marty Kube, all rights reserved.
 
 This program is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
