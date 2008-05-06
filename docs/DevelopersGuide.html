@@ -6,7 +6,7 @@
 	<META NAME="GENERATOR" CONTENT="OpenOffice.org 2.4  (Win32)">
 	<META NAME="AUTHOR" CONTENT="Marty Kube">
 	<META NAME="CREATED" CONTENT="20080417;17354503">
-	<META NAME="CHANGED" CONTENT="20080430;13564147">
+	<META NAME="CHANGED" CONTENT="20080506;10111764">
 	<META NAME="CHANGEDBY" CONTENT="Marty Kube">
 	<META NAME="CHANGEDBY" CONTENT="Marty Kube">
 	<META NAME="CHANGEDBY" CONTENT="Marty Kube">
@@ -31,14 +31,14 @@
 Guide </FONT>
 </H1>
 <P><FONT FACE="Arial, sans-serif"><FONT SIZE=4><B>Version 0.2</B></FONT></FONT></P>
-<P><FONT FACE="Arial, sans-serif"><FONT SIZE=4><B>2008-04-30</B></FONT></FONT></P>
+<P><FONT FACE="Arial, sans-serif"><FONT SIZE=4><B>2008-05-05</B></FONT></FONT></P>
 <P><FONT FACE="Arial, sans-serif"><FONT SIZE=4><B>Marty Kube</B></FONT></FONT></P>
 <HR>
 <H2 CLASS="western"><A NAME="Introduction"></A><FONT FACE="Arial, sans-serif">Introduction</FONT></H2>
-<P><A NAME="Introduction1"></A><FONT FACE="Arial, sans-serif"><A HREF="http://code.google.com/p/jbati/">jBati</A>
+<P><FONT FACE="Arial, sans-serif"><A HREF="http://code.google.com/p/jbati/">jBati</A>
 is a Object Relational Mapping (<A HREF="http://en.wikipedia.org/wiki/Object_Relational_Mapping">ORM</A>)
 framework for JavaScript programs running on the <A HREF="http://www.aptana.com/jaxer/">Jaxer</A>
-platform. JavaScript has primarily been browser scripting language.
+platform. JavaScript has primarily been a browser scripting language.
 Lately, JavaScript has been gaining traction as a server side
 development language. Once JavaScript moves to the server side,
 interaction with a database becomes an important component of most
@@ -58,14 +58,14 @@ supports database interaction in JavaScript. </FONT>
 in ORM frameworks. In the Java world, two contrasting examples are
 <A HREF="http://www.hibernate.org/">Hibernate</A> and <A HREF="http://ibatis.apache.org/">iBATIS</A>.
 Both of these are reasonable approaches; either one might be suitable
-depending on your needs (here are some recommendations on <A HREF="http://f1.grp.yahoofs.com/v1/MDH8R9hmkRTGEMSze8SrVwVG5VWGtrX42M1PdTBIrDOGp6EFlLQq2eGMlwzU7Y6VrFQrHmNvJTjGCnfg_tMd6p6HmKWR07I/NovaJug%202007%20Persistence%20Choices.pdf">choosing</A>
+depending on your needs (here are some recommendations on <A HREF="http://f1.grp.yahoofs.com/v1/MDH8R9hmkRTGEMSze8SrVwVG5VWGtrX42M1PdTBIrDOGp6EFlLQq2eGMlwzU7Y6VrFQrHmNvJTjGCnfg_tMd6p6HmKWR07I/NovaJug 2007 Persistence Choices.pdf">choosing</A>
 an ORM framework). </FONT>
 </P>
 <P><FONT FACE="Arial, sans-serif">Hibernate falls into the
 traditional ORM framework camp, which are frameworks that pretty much
 handle all of the object life cycle details for you. You define
 object attributes and relationships and the framework generates SQL
-and often DDL, decides when object state has changed a database
+and often DDL, decides when object state has changed and a database
 update is needed, and generally does the right thing. The database
 side of the persistence model is very much encapsulated. </FONT>
 </P>
@@ -110,8 +110,8 @@ callbacks</A>. </FONT>
 <P><FONT FACE="Arial, sans-serif">Likewise, it might be worthwhile to
 take a look at the iBATIS <A HREF="http://ibatisnet.sourceforge.net/Tutorial.html">tutorial</A>,
 or if you have a little more time, the iBATIS Developer <A HREF="http://ibatisnet.sourceforge.net/DevGuide/">Guide</A>.
-These documents will give you a good feel for how to use a SQL
-mapping framework and the philosophy that jBati was built on.</FONT></P>
+These documents show how to use a SQL mapping framework and the
+philosophy that jBati was built on.</FONT></P>
 <H2 CLASS="western"><FONT FACE="Arial, sans-serif">Installation</FONT></H2>
 <P><FONT FACE="Arial, sans-serif">Obtain the latest distribution from
 the project home page (<A HREF="http://code/google.com/p/jbati">http://code/google.com/p/jbati</A>).
@@ -129,9 +129,8 @@ features.</FONT></P>
 need a database, SQL, and some JavaScript objects that you want to
 put together in a useful manner. You'll have to write the
 configuration files which contain the SQL and the mapping to
-JavaScript objects/attributes</FONT></P>
-<P><FONT FACE="Arial, sans-serif">. Then, you'll include the jBati
-library in you application code and use the API to fetch and persist
+JavaScript objects/attributes. Then, you'll include the jBati library
+in you application code and use the API to fetch and persist
 JavaScript objects in your database. To make this clear, we'll start
 with an example and then follow up with reference information.</FONT></P>
 <H2 CLASS="western"><FONT FACE="Arial, sans-serif">Example</FONT></H2>
@@ -181,9 +180,8 @@ side of the jBati framework, which runs in the browser, is loaded on
 line 13.</FONT></P>
 <P><FONT FACE="Arial, sans-serif">You'll need to supply equivalent
 scripts for the next two included script. The first script script
-defines your domain objects and the second script tells jBati to load
-your configuration files which contains SQL and the mapping to
-objects. </FONT>
+defines domain objects and the second script tells jBati to load your
+configuration files which contains SQL and the mapping to objects. </FONT>
 </P>
 <P><FONT FACE="Arial, sans-serif">The domain objects need to be
 available on the client, where you'll use them, and on the server
@@ -232,9 +230,8 @@ configuration is a server side only operation as you likely don't
 want to expose this information on the Internet. Therefore, the
 including script tag is run=&quot;server&quot;. The path to the file
 on line 6 is a file system path, relative in this case, which gets
-resolved to a <A HREF="//.">file://</A> protocol URL on line 7. Line
-8 invokes the jBati call to parse the configuration file and build a
-jBati client.</FONT></P>
+resolved to a file protocol URL on line 7. Line 8 invokes the jBati
+call to parse the configuration file and build a jBati client.</FONT></P>
 <P><FONT FACE="Arial, sans-serif">In this example, the jBati client
 is used on the browser side. The second parameter to
 buildSqlMapClient(), 'ExampleJSS', names the client for later
@@ -333,15 +330,15 @@ fetched:</FONT></P>
 attribute of the XML select element and is used to identify which SQL
 statement is to be executed. The SQL has replacement tokens such as
 the #id# parameter on line 19 of the sqlMap document. The replacement
-token is typical substituted with similarly named properties of a
+token is typical substituted with similarly named property of the
 passed in parameter object. In this case, since the parameter is a
 single valued, or scalar, parameter, jBati uses it irregardless of
 the name of the replacement token.</FONT></P>
 <P><FONT FACE="Arial, sans-serif">The select statement is executed
 and jBati then creates a new instance of Person and populates
 properties of the person object with the result set. The SQL
-statement has column aliases for the columns. This allow mapping of
-the table columns to object properties.</FONT></P>
+statement has column aliases for the columns. This allows mapping of
+table columns to object properties.</FONT></P>
 <P><FONT FACE="Arial, sans-serif">Executing the insert statement
 shows how to use a object as the parameter object. For example, if we
 have a Person object:</FONT></P>
@@ -360,14 +357,14 @@ values for the updatePerson SQL statement:</FONT></P>
 supports one other main usage pattern, which is jBati on the server
 side. In this pattern, you would write server side code that
 interacts with jBati, and then also write a server side data access
-API with is marked for Jaxer to proxy. For an example of this
+API with methods marked for Jaxer to proxy. For an example of this
 pattern, see examples/jss.</FONT></P>
 <P><FONT FACE="Arial, sans-serif">The next sections document the
 sqlMapConfig and sqlMap XML documents.</FONT></P>
 <H2 CLASS="western"><FONT FACE="Arial, sans-serif">SqlMapConfig</FONT></H2>
 <P><FONT FACE="Arial, sans-serif">The sqlMapConfig element is loaded
 with the call:</FONT></P>
-<PRE STYLE="margin-bottom: 0.2in">Jbati.Server.SqlMapClientBuilder.buildSqlMapClient(utl).  </PRE><P>
+<PRE STYLE="margin-bottom: 0.2in">Jbati.Server.SqlMapClientBuilder.buildSqlMapClient(url).  </PRE><P>
 <FONT FACE="Arial, sans-serif">The url argument must be a file
 protocol URL.</FONT></P>
 <P><FONT FACE="Arial, sans-serif">The sqlMapConfig XML document
@@ -491,7 +488,8 @@ are listed in the following table:</FONT></P>
 		</TD>
 		<TD WIDTH=61%>
 			<P><FONT FACE="Arial, sans-serif">The class from which an object
-			instance will be created and populated with the result set values.</FONT></P>
+			instances will be created and populated with the result set
+			values.</FONT></P>
 		</TD>
 	</TR>
 	<TR VALIGN=TOP>

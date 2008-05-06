@@ -4,3 +4,5 @@ N - try to handle &qrdot; from OO - not done
 N - add empty table elements
 N - summary and description on top of page (in post processing)
 N - inline pre tags - OO
+  - drop enable_anchor_macro attribute
+  
