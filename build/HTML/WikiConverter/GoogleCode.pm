@@ -4,7 +4,7 @@ use warnings;
 use strict;
 
 use base 'HTML::WikiConverter';
-our $VERSION = '0.1';
+our $VERSION = '0.10';
 
 use Params::Validate ':types';
 use URI;
@@ -193,11 +193,11 @@ sub _image {
 sub preprocess_node {
   my( $self, $node ) = @_;
 
-  $self->strip_aname($node) if $node->tag eq 'a';
-  $self->caption2para($node) if $node->tag eq 'caption';
+  $self->strip_aname($node) if $node->tag and $node->tag eq 'a';
+  $self->caption2para($node) if $node->tag and $node->tag eq 'caption';
 
   # (bug #17813)
-  if( $node->tag eq 'a' and $node->attr('name') ) {
+  if($node->tag and $node->tag eq 'a' and $node->attr('name') ) {
     my $name = $node->attr('name');
     $node->preinsert( new HTML::Element('a', name => $name) );
     $node->attr( name => undef );
@@ -251,7 +251,6 @@ sub postprocess_output {
 
 	# add summary commenton first line in wiki output
 	if($self->summary) {
-		print STDERR "Have summary\n";
 		$$outref = '# summary ' . $self->summary . "\n\n$$outref";
 	}
 }
