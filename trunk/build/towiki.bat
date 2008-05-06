@@ -31,15 +31,30 @@ my @toEscape = qw/
 		DevGuide
 /;
 
+my %to_process = qw /
+	..\docs\DevelopersGuide.html ..\..\wiki\DevelopersGuide.wiki
+/;
+
 my $wc = new HTML::WikiConverter(
 	dialect => 'GoogleCode',
 	escape_autolink => \@toEscape,
-	escape_entities => 0);
+	escape_entities => 0,
+	base_uri => 'http://beavercreekconsulting.com',
+	summary => 'Developers Guide V0.2 - jBati usage and examples'
+);
 
-my $html = do { local $/; <> };
-my $converted = $wc->html2wiki($html);
-print $converted, "\n";
+foreach my $in (keys %to_process) {
 
+	open(HTML, "<$in") or die "cannot open $in: $!\n";	
+	my $html = do {local $/; <HTML>};
+	close(HTML);
 
+	open(WIKI, '>' . $to_process{$in}) or die "cannot open " . 
+		$to_process{$in} . ": $!\n";	
+	my $converted = $wc->html2wiki($html);
+	print WIKI $converted, "\n";
+	close(WIKI);
+	
+}
 __END__
 :endofperl

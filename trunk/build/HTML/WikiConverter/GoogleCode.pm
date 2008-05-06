@@ -4,7 +4,7 @@ use warnings;
 use strict;
 
 use base 'HTML::WikiConverter';
-our $VERSION = '0.53';
+our $VERSION = '0.1';
 
 use Params::Validate ':types';
 use URI;
@@ -94,11 +94,17 @@ L<http://moinmoin.wikiwikiweb.de/HelpOnMacros> for details.
 A reference to an array of CamelCase words for which Google 
 autolink-ing should be escaped by preceesding the word with !.
 
+=head2 summary
+
+Produce a summary element in the wiki markup.  The summary element
+appears in the index page of the Google wiki.
+
 =cut
 
 sub attributes { {
   enable_anchor_macro => { default => 0, type => BOOLEAN },
-  escape_autolink => {default => 0, type => ARRAYREF}
+  escape_autolink => {default => 0, type => ARRAYREF},
+  summary => {default => 0, type => SCALAR}
 }}
 
 my %att2prop = (
@@ -204,8 +210,8 @@ sub preprocess_tree {
 	$self->_escape_autolink($root);
 }
 
-# escape google autolinking of specific camel case words
-# works in attribute escape_autolink
+# escape Google wiki autolinking of specific CamelCase words
+# words in attribute escape_autolink
 sub _escape_autolink {
 	my ($self, $parent) = @_;
   foreach my $child ($parent->content_list) {
@@ -229,8 +235,7 @@ sub _escape_autolink {
  			}
   	}
   }
-}
-	
+}	
 
 my @protocols = qw( http https mailto );
 my $urls  = '(' . join('|', @protocols) . ')';
@@ -243,19 +248,29 @@ my $url_re = "\\b($urls:\[$any\]+?)(?=\[$punc\]*\[^$any\])";
 sub postprocess_output {
   my( $self, $outref ) = @_;
   $$outref =~ s/($url_re)\[\[BR\]\]/$1 [[BR]]/go;
+
+	# add summary commenton first line in wiki output
+	if($self->summary) {
+		print STDERR "Have summary\n";
+		$$outref = '# summary ' . $self->summary . "\n\n$$outref";
+	}
 }
 
 =head1 AUTHOR
 
-David J. Iberri, C<< <diberri at cpan.org> >>
 Marty Kube C<< <martykube at cpan.org> >>
+
+=head1 SEE ALSO
+
+This module is based on the HTML::WikiConverter::MoinMoin module by 
+David J. Iberri, C<< <diberri at cpan.org> >>
 
 =head1 BUGS
 
 Please report any bugs or feature requests to
-C<bug-html-wikiconverter-moinmoin at rt.cpan.org>, or through the web
+C<bug-html-wikiconverter-googlecode at rt.cpan.org>, or through the web
 interface at
-L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=HTML-WikiConverter-MoinMoin>.
+L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=HTML-WikiConverter-GoogleCode>.
 I will be notified, and then you'll automatically be notified of
 progress on your bug as I make changes.
 
@@ -271,25 +286,24 @@ You can also look for information at:
 
 =item * AnnoCPAN: Annotated CPAN documentation
 
-L<http://annocpan.org/dist/HTML-WikiConverter-MoinMoin>
+L<http://annocpan.org/dist/HTML-WikiConverter-GoogleCode>
 
 =item * CPAN Ratings
 
-L<http://cpanratings.perl.org/d/HTML-WikiConverter-MoinMoin>
+L<http://cpanratings.perl.org/d/HTML-WikiConverter-GoogleCode>
 
 =item * RT: CPAN's request tracker
 
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=HTML-WikiConverter-MoinMoin>
+L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=HTML-WikiConverter-GoogleCode>
 
 =item * Search CPAN
 
-L<http://search.cpan.org/dist/HTML-WikiConverter-MoinMoin>
+L<http://search.cpan.org/dist/HTML-WikiConverter-GoogleCode>
 
 =back
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2006 David J. Iberri, all rights reserved.
 Copyright 2008 Marty Kube, all rights reserved.
 
 This program is free software; you can redistribute it and/or modify
