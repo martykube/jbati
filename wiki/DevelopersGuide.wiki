@@ -1,10 +1,11 @@
-#summary Developers Guide for jBati 0.1
-
-
+# summary Developers Guide V0.2 - jBati usage and examples
 == jBati Developers Guide ==
 
-*Version 0.1, 2008-04-17*
+*Version 0.2*
 
+*2008-05-05*
+
+*Marty Kube*
 
 ----
 
@@ -14,7 +15,7 @@
 
 jBati is targeted to the Jaxer platform. Jaxer is an AJAX web application development platform that uses !JavaScript on the server side. Jaxer allows development of an entire application in !JavaScript and supports database interaction in !JavaScript.
 
-There is a spectrum of approaches in ORM frameworks. In the Java world, two contrasting examples are [http://www.hibernate.org/ Hibernate] and [http://ibatis.apache.org/ iBATIS]. Both of these are reasonable approaches; either one might be suitable depending on your needs (here are some recommendations on [http://f1.grp.yahoofs.com/v1/MDH8R9hmkRTGEMSze8SrVwVG5VWGtrX42M1PdTBIrDOGp6EFlLQq2eGMlwzU7Y6VrFQrHmNvJTjGCnfg_tMd6p6HmKWR07I/NovaJug%202007%20Persistence%20Choices.pdf choosing] an ORM framework).
+There is a spectrum of approaches in ORM frameworks. In the Java world, two contrasting examples are [http://www.hibernate.org/ Hibernate] and [http://ibatis.apache.org/ iBATIS]. Both of these are reasonable approaches; either one might be suitable depending on your needs (here are some recommendations on [http://f1.grp.yahoofs.com/v1/MDH8R9hmkRTGEMSze8SrVwVG5VWGtrX42M1PdTBIrDOGp6EFlLQq2eGMlwzU7Y6VrFQrHmNvJTjGCnfg_tMd6p6HmKWR07I/NovaJug 2007 Persistence Choices.pdf choosing] an ORM framework).
 
 Hibernate falls into the traditional ORM framework camp, which are frameworks that pretty much handle all of the object life cycle details for you. You define object attributes and relationships and the framework generates SQL and often DDL, decides when object state has changed and a database update is needed, and generally does the right thing. The database side of the persistence model is very much encapsulated.
 
@@ -34,7 +35,7 @@ This guide will make the most sense if you are familiar with Jaxer and iBATIS.
 
 Setting up the framework requires that the jBati library be loaded at the appropriate points the Jaxer page life cycle. Check out the Jaxer documentation on [http://www.aptana.com/node/224 callbacks] and using !JavaScript libraries [http://www.aptana.com/node/202 during callbacks].
 
-Likewise, it might be worthwhile to take a look at the iBATIS [http://ibatisnet.sourceforge.net/Tutorial.html tutorial], or if you have a little more time, the iBATIS Developer [http://ibatisnet.sourceforge.net/DevGuide/ Guide]. These documents will give you a good feel for how to use a SQL mapping framework and the philosophy that jBati was built on.
+Likewise, it might be worthwhile to take a look at the iBATIS [http://ibatisnet.sourceforge.net/Tutorial.html tutorial], or if you have a little more time, the iBATIS Developer [http://ibatisnet.sourceforge.net/DevGuide/ Guide]. These documents show how to use a SQL mapping framework and the philosophy that jBati was built on.
 
 === Installation ===
 
@@ -74,11 +75,11 @@ The top portion of jbati-client-side.html shows the pieces that are need:
 019     <script src="user-object-maps.js" runat="server" autoload="true"></script>
 }}}
 
-On line 10, the server side of the jBati framework is imported into the server execution context. The Jaxer attributes are important here; both runat=”server” and autoload=”true” are necessary. Likewise, the client side of the jBati framework, which runs in the browser, is loaded on line 13.
+On line 10, the server side of the jBati framework is imported into the server execution context. The Jaxer attributes are important here; both runat="server" and autoload="true" are necessary. Likewise, the client side of the jBati framework, which runs in the browser, is loaded on line 13.
 
-You'll need to supply equivalent scripts for the next two included script. The first script script defines your domain objects and the second script tells jBati to load your configuration files which contains SQL and the mapping to objects.
+You'll need to supply equivalent scripts for the next two included script. The first script script defines domain objects and the second script tells jBati to load your configuration files which contains SQL and the mapping to objects.
 
-The domain objects need to be available on the client, where you'll use them, and on the server side, where jBati will take care of persistence operations. On line 16, the domain objects are imported into both the client and server context with the script attributes of runat=”both” and autoload=”true”. Here's a listing of user-objects.js:
+The domain objects need to be available on the client, where you'll use them, and on the server side, where jBati will take care of persistence operations. On line 16, the domain objects are imported into both the client and server context with the script attributes of runat="both" and autoload="true". Here's a listing of user-objects.js:
 
 {{{
 001 //
@@ -97,7 +98,7 @@ The domain objects need to be available on the client, where you'll use them, an
 014 })();
 }}}
 
-Person is a pretty lightweight domain object. In fact, if you find yourself declaring this type of object, you can just use the !JavaScript Object class in your object mapping. In any case, here, the domain objects are kept in a namespace object (Examples). Executing this code is need during server callbacks to populate the global variable Examples and thus the script attribute autoload=”true” is required for this example. On the other hand, if you're not using a namespace, the autoload attribute is not needed.
+Person is a pretty lightweight domain object. In fact, if you find yourself declaring this type of object, you can just use the !JavaScript Object class in your object mapping. In any case, here, the domain objects are kept in a namespace object (Examples). Executing this code is need during server callbacks to populate the global variable Examples and thus the script attribute autoload="true" is required for this example. On the other hand, if you're not using a namespace, the autoload attribute is not needed.
 
 The next bit of scripting you need to provide tells jBati to load your SQL and object mapping files. On line 19 user-object-maps.js is loaded. Here's a listing:
 
@@ -114,9 +115,9 @@ The next bit of scripting you need to provide tells jBati to load your SQL and o
 010 })();
 }}}
 
-Loading the object mapping configuration is a server side only operation as you likely don't want to expose this information on the Internet. Therefore, the including script tag is run=”server”. The path to the file on line 6 is a file system path, relative in this case, which gets resolved to a [//. file://] protocol URL on line 7. Line 8 invokes the jBati call to parse the configuration file and build a jBati client.
+Loading the object mapping configuration is a server side only operation as you likely don't want to expose this information on the Internet. Therefore, the including script tag is run="server". The path to the file on line 6 is a file system path, relative in this case, which gets resolved to a file protocol URL on line 7. Line 8 invokes the jBati call to parse the configuration file and build a jBati client.
 
-In this example, the jBati client is used on the browser side. The second parameter to buildSqlMapClient(), 'ExampleJSS', names the client for later retrieval by !JavaScript executing in the browser. Naming the client is optional and needed only if you're using multiple database connections. The unnamed, or default, client uses the Jaxer application database connection.
+In this example, the jBati client is used on the browser side. The second parameter to buildSqlMapClient(), '!ExampleJSS', names the client for later retrieval by !JavaScript executing in the browser. Naming the client is optional and needed only if you're using multiple database connections. The unnamed, or default, client uses the Jaxer application database connection.
 
 The next item needed is the jBati configuration files. The first file contains a sqlMapConfig document:
 
@@ -205,9 +206,9 @@ Then, a single Person object is fetched:
         var p = client.queryForObject('getPerson', 1);
 }}}
 
-The parameter 'getPerson' is the id attribute of the XML select element and is used to identify which SQL statement is to be executed. The SQL has replacement tokens such as the #id# parameter on line 19 of the sqlMap document. The replacement token is typical substituted with similarly named properties of a passed in parameter object. In this case, since the parameter is a single valued, or scalar, parameter, jBati uses it irregardless of the name of the replacement token.
+The parameter 'getPerson' is the id attribute of the XML select element and is used to identify which SQL statement is to be executed. The SQL has replacement tokens such as the #id# parameter on line 19 of the sqlMap document. The replacement token is typical substituted with similarly named property of the passed in parameter object. In this case, since the parameter is a single valued, or scalar, parameter, jBati uses it irregardless of the name of the replacement token.
 
-The select statement is executed and jBati then creates a new instance of Person and populates properties of the person object with the result set. The SQL statement has column aliases for the columns. This allow mapping of the table columns to object properties.
+The select statement is executed and jBati then creates a new instance of Person and populates properties of the person object with the result set. The SQL statement has column aliases for the columns. This allows mapping of table columns to object properties.
 
 Executing the insert statement shows how to use a object as the parameter object. For example, if we have a Person object:
 
@@ -229,7 +230,7 @@ client.update('updatePerson', p);
 
 This wraps up the first example.
 
-It is worth noting that jBati supports one other main usage pattern, which is jBati on the server side. In this pattern, you would write server side code that interacts with jBati, and then also write a server side data access API with is marked for Jaxer to proxy. For an example of this pattern, see examples/jss.
+It is worth noting that jBati supports one other main usage pattern, which is jBati on the server side. In this pattern, you would write server side code that interacts with jBati, and then also write a server side data access API with methods marked for Jaxer to proxy. For an example of this pattern, see examples/jss.
 
 The next sections document the sqlMapConfig and sqlMap XML documents.
 
@@ -238,37 +239,31 @@ The next sections document the sqlMapConfig and sqlMap XML documents.
 The sqlMapConfig element is loaded with the call:
 
 {{{
- Jbati.Server.SqlMapClientBuilder.buildSqlMapClient(utl).
+Jbati.Server.SqlMapClientBuilder.buildSqlMapClient(url).
 }}}
 
 The url argument must be a file protocol URL.
 
 The sqlMapConfig XML document should conform to the iBATIS sqlMapConfig DTD (http://ibatis.apache.org/dtd/sql-map-config-2.dtd). Many elements in the DTD are not supported and will be ignored. The supported elements are listed in the following table:
 
-|| '''Element''' || '''Attribute''' || '''Description''' ||
-|| sqlMapConfig ||   ||  ||
-|| sqlMap || resource || File system path to a sqlMap file. Relative paths are relative to the location of the sqlMapConfig file. ||
-
+|| *Element* || *Attribute* || *Description* ||
+|| sqlMapConfig ||  ||  ||
+|| !SqlMap || resource || File system path to a sqlMap file. Relative paths are relative to the location of the sqlMapConfig file. ||
 
 === !SqlMap ===
 
 Similar to the sqlMapConfig document, the sqlMap XML document should conform to the iBATIS sqlMap DTD (http://ibatis.apache.org/dtd/sql-map-2.dtd).
 
-
 Many elements in the DTD are not supported and will be ignored. The supported elements and attributes are listed in the following table:
 
-|| '''Element''' || '''Attribute''' || '''Description''' ||
+|| *Element* || *Attribute* || *Description* ||
 || sqlMap ||  ||  ||
 || select ||  || Contains a SQL select statement as CDATA. ||
 || select || id || The is by which SQL statements are referred to. All API calls that execute DML require this as a parameter. ||
-|| select || resultClass || The class from which an object instance will be created and populated with the result set values. ||
+|| select || resultClass || The class from which an object instances will be created and populated with the result set values. ||
 || update ||  || Contains a SQL update statement as CDATA. ||
 || update || id || The is by which SQL statements are referred to. All API calls that execute DML require this as a parameter. ||
 || insert ||  || Contains a SQL insert statement as CDATA. ||
 || insert || id || The is by which SQL statements are referred to. All API calls that execute DML require this as a parameter. ||
 || delete ||  || Contains a SQL delete statement as CDATA. ||
 || delete || id || The is by which SQL statements are referred to. All API calls that execute DML require this as a parameter. ||
-
-
-
-
