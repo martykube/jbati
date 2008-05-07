@@ -1,5 +1,5 @@
 #summary jBati Design and Architecture
-#labels Featured,Phase-Design
+#labels Phase-Design
 
 Last update: 20080408
 
