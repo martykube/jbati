@@ -1,5 +1,6 @@
+#summary Developers Guide V0.2 - jBati usage and examples.
 #labels Featured
-# summary Developers Guide V0.2 - jBati usage and examples
+
 == jBati Developers Guide ==
 
 *Version 0.2*
