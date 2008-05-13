@@ -1,5 +1,5 @@
 #summary Developers Guide V0.2 - jBati usage and examples.
-#labels Featured
+#labels Featured,Phase-Deploy
 
 == jBati Developers Guide ==
 
