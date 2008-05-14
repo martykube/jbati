@@ -1,8 +1,0 @@
-D - implement escaping of auto-link for CamelCase words - Done
-D - fix up image urls - use base_uri attribute
-N - try to handle &qrdot; from OO - not done
-N - add empty table elements
-N - summary and description on top of page (in post processing)
-N - inline pre tags - OO
-  - drop enable_anchor_macro attribute
-  
